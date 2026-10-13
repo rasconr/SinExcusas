@@ -1,5 +1,5 @@
-// Sin Excusas · service worker: funciona sin internet y muestra los avisos que manda tu servidor.
-const V='sinexcusas-v3';
+// Sin Excusas · service worker: funciona sin internet y arma los avisos que manda tu servidor.
+const V='sinexcusas-v4';
 const CORE=['./','index.html','manifest.json','icon-192.png','icon-512.png','apple-touch-icon.png'];
 
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)))});
@@ -20,12 +20,24 @@ self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(res=>{const cp=res.clone();caches.open(V).then(c=>c.put(r,cp));return res})));
 });
 
-/* ---------- avisos ---------- */
+/* ---------- utilidades ---------- */
 const pad=n=>String(n).padStart(2,'0');
 const dkey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const fromKey=k=>new Date(k+'T12:00:00');
 const toMin=t=>{const[a,b]=(t||'0:0').split(':').map(Number);return a*60+b};
 const fmt=n=>{const r=Math.round(n*100)/100;return Math.abs(r)>=1000?r.toLocaleString('es-MX'):String(r)};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ---------- género y tono ---------- */
+const GW=[['puto huevón','puta huevona','flojera con patas'],['huevón','huevona','flojera'],['cabrón','cabrona','crack'],['campeón','campeona','crack'],['pendejo','pendeja','menso'],['perro','fiera','fiera'],['abogado','abogada','profesional del Derecho']];
+const reEsc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function gfix(t,g){
+  if(!t)return t;let out=String(t);
+  try{GW.forEach(([m,f,n])=>{const to=g==='m'?f:g==='n'?n:m;
+    out=out.replace(new RegExp('(?<![\\p{L}])('+reEsc(m)+'|'+reEsc(f)+')(?![\\p{L}])','giu'),w=>(w[0]!==w[0].toLowerCase())?to[0].toUpperCase()+to.slice(1):to)})}catch(e){}
+  return out;
+}
 
 function fill(t,h,v,S,dow){
   const target=h.type==='check'?1:h.target;
@@ -35,33 +47,68 @@ function fill(t,h,v,S,dow){
     .replace(/\{unidad\}/g,h.unit||'').replace(/\{hecho\}/g,fmt(v)).replace(/\{rutina\}/g,rutina).replace(/\{yo\}/g,(S.settings||{}).name||'')
     .replace(/\s+/g,' ').replace(/\s([.,!?])/g,'$1').trim();
 }
+
 function ctx(S,now){
+  const st=S.settings||{},g=st.gender||'h',tone=st.tone||'brutal';
   const k=dkey(now),dow=now.getDay(),m=now.getHours()*60+now.getMinutes();
-  const val=h=>Number(((S.log||{})[k]||{})[h.id]||0);
-  const done=h=>h.type==='check'?val(h)>=1:val(h)>=h.target;
-  const active=(S.habits||[]).filter(h=>!h.paused&&(h.days||[]).includes(dow));
-  return{k,dow,m,val,done,active};
+  const valOn=(h,key)=>Number(((S.log||{})[key]||{})[h.id]||0);
+  const doneV=(h,v)=>h.type==='avoid'?v<1:h.type==='check'?v>=1:v>=h.target;
+  const val=h=>valOn(h,k);
+  const done=h=>doneV(h,val(h));
+  const onDay=(h,d)=>!h.paused&&(h.days||[]).includes(d)&&!(st.examMode&&!h.essential);
+  const active=(S.habits||[]).filter(h=>onDay(h,dow));
+  const say=(b,d,c)=>gfix(tone==='brutal'?b:tone==='duro'?d:c,g);
+  const streak=h=>{let n=0,d=new Date(now);if(!doneV(h,valOn(h,dkey(d))))d=addDays(d,-1);
+    for(let i=0;i<500;i++){if(h.created&&dkey(d)<h.created)break;if((h.days||[]).includes(d.getDay())){if(doneV(h,valOn(h,dkey(d))))n++;else break}d=addDays(d,-1)}return n};
+  return{st,g,tone,k,dow,m,val,valOn,doneV,done,onDay,active,say,streak};
 }
+
+function weekly(S,c,now){
+  let sum=0,cnt=0;
+  for(let i=0;i<7;i++){const d=addDays(now,-i),dk=dkey(d),hs=(S.habits||[]).filter(h=>c.onDay(h,d.getDay()));if(!hs.length)continue;cnt++;sum+=hs.filter(h=>c.doneV(h,c.valOn(h,dk))).length/hs.length*100}
+  const avg=cnt?Math.round(sum/cnt):0;
+  const rates=(S.habits||[]).filter(h=>!h.paused).map(h=>{let ok=0,tot=0;for(let i=0;i<7;i++){const d=addDays(now,-i);if(!(h.days||[]).includes(d.getDay()))continue;tot++;if(c.doneV(h,c.valOn(h,dkey(d))))ok++}return{h,r:tot?ok/tot:1}}).sort((a,b)=>b.r-a.r);
+  let body='Cumpliste '+avg+'% esta semana.';
+  if(rates.length>1&&rates[0].r!==rates[rates.length-1].r)body+=' Mejor: '+rates[0].h.name.toLowerCase()+'. Peor: '+rates[rates.length-1].h.name.toLowerCase()+'.';
+  body+=' '+(avg>=85?c.say('Semanón, cabrón.','Gran semana.','¡Semanón!'):avg>=60?c.say('Nada mal, pero se puede más, huevón.','Bien, pero se puede más.','Buen trabajo, vamos por más.'):c.say('Semana floja, huevón. La que viene sin excusas.','Semana floja. Corrige la próxima.','Semana difícil. La próxima es tuya.'));
+  return{title:'Resumen semanal',body};
+}
+
 function due(S,now){
-  const c=ctx(S,now),W=5,out=[];
+  const c=ctx(S,now),W=5,out=[],st=c.st;
   const hit=t=>{const x=toMin(t);return x<=c.m&&x>c.m-W};
-  c.active.forEach(h=>{if((h.reminders||[]).some(hit)&&!c.done(h))out.push({title:((h.emoji||'')+' '+h.name).trim(),body:fill(h.hate,h,c.val(h),S,c.dow)})});
+  // hábitos
+  c.active.forEach(h=>{if(h.type==='avoid')return;if((h.reminders||[]).some(hit)&&!c.done(h))out.push({title:((h.emoji||'')+' '+h.name).trim(),body:fill(h.hate,h,c.val(h),S,c.dow)})});
+  // eventos y exámenes
   (S.events||[]).forEach(e=>{
+    if(e.type==='examen'&&e.pre&&hit(e.preTime||'19:00')){
+      const n=Math.round((fromKey(e.date)-fromKey(c.k))/864e5);
+      if(n>=1&&n<=e.pre){const t=n===1?'mañana':'en '+n+' días';
+        out.push({title:'Examen '+t,body:c.say('Examen de '+e.title+' '+t+'. ¿Ya estudiaste o vas a improvisar, huevón?','Examen de '+e.title+' '+t+'. Repasa hoy.','Examen de '+e.title+' '+t+'. Un repaso hoy y llegas con todo.')})}
+    }
     if(!e.remind)return;if(e.date?e.date!==c.k:!(e.days||[]).includes(c.dow))return;
     const t=toMin(e.start)-e.remind;
-    if(t<=c.m&&t>c.m-W)out.push({title:(e.type==='clase'?'Clase':'Personal')+' en '+Math.max(1,toMin(e.start)-c.m)+' min',body:e.title+(e.place?' · '+e.place:'')+' a las '+e.start+'.'});
+    if(t<=c.m&&t>c.m-W)out.push({title:({clase:'Clase',personal:'Personal',examen:'Examen'}[e.type]||'Evento')+' en '+Math.max(1,toMin(e.start)-c.m)+' min',body:e.title+(e.place?' · '+e.place:'')+' a las '+e.start+'.'});
   });
-  const st=S.settings||{};
+  // revisión nocturna + racha en peligro
   if(st.nightOn&&st.night&&hit(st.night)&&c.active.length){
     const pend=c.active.filter(h=>!c.done(h));
     out.push(pend.length
       ?{title:'Revisión del día',body:(st.nightHate||'Te faltan: {pendientes}.').replace(/\{hora\}/g,st.night).replace(/\{pendientes\}/g,pend.map(h=>h.type==='qty'?h.name.toLowerCase()+' ('+fmt(Math.max(0,h.target-c.val(h)))+' '+h.unit+')':h.name.toLowerCase()).join(', '))}
       :{title:'Revisión del día',body:st.nightOk||'Cumpliste todo hoy.'});
+    pend.filter(h=>h.type!=='avoid').map(h=>({h,s:c.streak(h)})).filter(x=>x.s>=3).forEach(({h,s})=>out.push({title:'Racha en peligro',
+      body:c.say('Vas a perder tu racha de '+s+' días de '+h.name.toLowerCase()+', huevón. Todavía estás a tiempo.','Tu racha de '+s+' días de '+h.name.toLowerCase()+' está en riesgo. Hazlo hoy.','¡No pierdas tu racha de '+s+' días de '+h.name.toLowerCase()+'! Aún estás a tiempo.')}));
   }
+  // resumen semanal
+  if(st.weeklyOn&&c.dow===Number(st.weeklyDay)&&hit(st.weeklyTime||'20:00')&&(S.habits||[]).length)out.push(weekly(S,c,now));
+  // pesaje semanal
+  const b=S.body||{};
+  if(b.weighOn&&c.dow===Number(b.weighDay)&&hit(b.weighTime||'08:00')&&((S.weights||[]).length||b.goal)&&!(S.weights||[]).some(w=>w.date>dkey(addDays(now,-6))))
+    out.push({title:'Hora de pesarte',body:c.say('Ya pasó una semana y no te has pesado, huevón. Súbete a la báscula.','Toca pesarte. Registra tu peso hoy.','Hoy toca pesarte. Registra cómo vas.')});
   return out;
 }
 function fallback(S,now){
-  const c=ctx(S,now);const pend=c.active.filter(h=>!c.done(h));
+  const c=ctx(S,now);const pend=c.active.filter(h=>h.type!=='avoid'&&!c.done(h));
   if(pend.length){const h=pick(pend);return{title:((h.emoji||'')+' '+h.name).trim(),body:fill(h.hate,h,c.val(h),S,c.dow)}}
   if(c.active.length)return{title:'Día perfecto',body:(S.settings||{}).nightOk||'Cumpliste todo hoy.'};
   return{title:'Sin Excusas',body:'Hoy no tienes hábitos pendientes.'};
@@ -75,10 +122,9 @@ async function onPush(e){
   if(!list.length&&S)list=due(S,now);
   if(!list.length&&S)list=[fallback(S,now)];
   if(!list.length)list=[{title:'Sin Excusas',body:'Abre la app y revisa tus hábitos de hoy.'}];
-  await Promise.all(list.slice(0,3).map((n,i)=>self.registration.showNotification(n.title,{body:n.body,icon:'icon-192.png',badge:'icon-192.png',tag:'se-'+Date.now()+'-'+i,data:{url:'./'}})));
+  await Promise.all(list.slice(0,4).map((n,i)=>self.registration.showNotification(n.title,{body:n.body,icon:'icon-192.png',badge:'icon-192.png',tag:'se-'+Date.now()+'-'+i,data:{url:'./'}})));
 }
 self.addEventListener('push',e=>e.waitUntil(onPush(e)));
 self.addEventListener('notificationclick',e=>{e.notification.close();
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(l=>l.length?l[0].focus():self.clients.openWindow('./')))});
-// exportado solo para pruebas en Node
-if(typeof module!=='undefined')module.exports={due,fallback};
+if(typeof module!=='undefined')module.exports={due,fallback,gfix};
