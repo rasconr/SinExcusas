@@ -306,6 +306,30 @@ textarea{resize:vertical;min-height:84px;line-height:1.4}
 .tour-card p{margin:6px 0 14px;font-size:15px}
 .gradepill{font-family:var(--f-mono);font-weight:800;font-size:15px;border-radius:8px;padding:3px 9px;background:var(--surface2)}
 .tip{font-size:15px;line-height:1.45;padding:10px 12px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--accent) 12%,var(--surface2));margin-bottom:6px}
+.copybox{display:flex;gap:8px;align-items:center;background:var(--surface2);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 8px 8px 12px}
+.copybox code{flex:1;min-width:0;font-family:var(--f-mono);font-size:12px;overflow-wrap:anywhere;user-select:all;-webkit-user-select:all}
+.copybox .btn{flex:none}
+.chat{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;padding:2px}
+.bub{max-width:86%;padding:10px 12px;border-radius:16px;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.bub.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:6px}
+.bub.ai{align-self:flex-start;background:var(--surface2);border-bottom-left-radius:6px}
+.bub.typing{color:var(--muted);font-style:italic}
+.lvl{width:76px;height:76px;border-radius:22px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:36px;font-weight:800;flex:none}
+.achs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ach{background:var(--surface2);border-radius:var(--r-sm);padding:10px 8px;text-align:center;display:flex;flex-direction:column;gap:3px;min-width:0}
+.ach span{font-size:28px}.ach b{font-size:12.5px;line-height:1.2}.ach small{font-size:11px;color:var(--muted);line-height:1.25}
+.ach.off{opacity:.42}.ach.off span{filter:grayscale(1)}
+#wrap{position:fixed;inset:0;z-index:80;background:linear-gradient(160deg,var(--accent),#13111d 72%);color:#fff;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column}
+#wrap .eyebrow{color:rgba(255,255,255,.75)}
+.wr-bars{display:flex;gap:4px}.wr-bars i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.3)}.wr-bars i.on{background:#fff}
+.wr-x{position:absolute;right:14px;top:calc(26px + env(safe-area-inset-top,0px));width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.25);color:#fff;font-size:24px}
+.wr-in{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;max-width:520px;margin:0 auto;width:100%;overflow-y:auto}
+.wr-h{font-family:var(--f-display);font-size:clamp(34px,10vw,52px);font-weight:800;line-height:1.02;margin:0;text-wrap:balance}
+.wr-h2{font-family:var(--f-display);font-size:28px;font-weight:800;margin:0}
+.wr-big{font-family:var(--f-display);font-size:clamp(84px,30vw,150px);font-weight:800;line-height:.95}
+.wr-p{font-size:19px;margin:0;opacity:.9}
+.wr-row{display:flex;align-items:baseline;gap:12px;padding:8px 0;border-top:1px solid rgba(255,255,255,.18);font-size:17px}.wr-row b{font-family:var(--f-display);font-size:34px;font-weight:800}
+.wr-tap{text-align:center;font-size:13px;opacity:.7}
 canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:55}
 pre.code{background:var(--surface2);border-radius:var(--r-sm);padding:10px;font-family:var(--f-mono);font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;max-height:160px}
 ol.steps{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
@@ -333,6 +357,7 @@ ol.steps{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true"><div class="in"><div class="grab"></div><div id="sheetBody"></div></div></div>
 <div class="focus" id="focus" hidden></div>
 <div id="tour" hidden></div>
+<div id="wrap" hidden></div>
 
 <script>
 (function(){
@@ -380,7 +405,7 @@ const TONES={
     v:['¡Día perfecto! Eres imparable.','Solo te falta 1. ¡Ya casi!','Te faltan {n}. Vamos por ellos.','Hoy es un buen día para empezar.'],
     nh:'Son las {hora}. Aún puedes con: {pendientes}.',no:'¡Cumpliste todo! Descansa, te lo ganaste.'}
 };
-const GW=[['puto huevón','puta huevona','flojera con patas'],['huevón','huevona','flojera'],['cabrón','cabrona','crack'],['campeón','campeona','crack'],['pendejo','pendeja','menso'],['perro','fiera','fiera'],['abogado','abogada','profesional del Derecho']];
+const GW=[['puto huevón','puta huevona','flojera con patas'],['huevón','huevona','flojera'],['cabrón','cabrona','crack'],['campeón','campeona','crack'],['pendejo','pendeja','menso'],['perro','fiera','fiera'],['bastardo','bastarda','criatura'],['abogado','abogada','profesional del Derecho']];
 const curG=()=>(typeof S!=='undefined'&&S&&S.settings&&S.settings.gender)||'h';
 const reEsc=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 function gfix(t,g){
@@ -391,6 +416,93 @@ function gfix(t,g){
 }
 const toneSay=(b,d,c)=>{const t=(S&&S.settings&&S.settings.tone)||'brutal';return gfix(t==='brutal'?b:t==='duro'?d:c)};
 const toneMsgs=(tone,type)=>{const t=TONES[tone]||TONES.brutal;return{hate:gfix((type==='qty'?t.qty:type==='avoid'?t.ok:t.check).join('\n')),congrats:gfix(t.ok.join('\n'))}};
+/* ---------- mensajes por hábito ---------- */
+const HMSG=[
+  {re:/fum|cigarr|vape|vapeo|tabaco/i,
+   hate:{brutal:['Deja de fumar, bastardo. Te estás chingando los pulmones.','Ni se te ocurra prender un cigarro hoy, huevón.','¿Otro cigarro? Tus pulmones no tienen repuesto, cabrón.','Llevas {racha} días sin fumar. No lo tires a la basura por un cigarro, huevón.'],
+         duro:['Hoy no fumas. Punto.','Llevas {racha} días sin fumar. No lo rompas hoy.'],
+         coach:['Respira hondo: hoy tampoco necesitas ese cigarro.','¡Llevas {racha} días sin fumar! Sigue así.']},
+   ok:{brutal:['Otro día sin fumar. Tus pulmones te lo agradecen, cabrón.'],duro:['Otro día sin fumar.'],coach:['¡Otro día sin fumar! Increíble.']}},
+  {re:/refresco|soda|coca|az[uú]car|dulce|pan dulce/i,
+   hate:{brutal:['Suelta la coca, huevón. Es azúcar líquida.','Ni un refresco hoy. Tu páncreas te lo pide de rodillas.','{racha} días sin refresco. No la riegues hoy, cabrón.'],
+         duro:['Hoy nada de refresco.','{racha} días sin refresco. Sigue.'],
+         coach:['Cambia el refresco por agua mineral hoy. Tú puedes.','¡{racha} días sin refresco! No pares.']},
+   ok:{brutal:['Día sin refresco. Tu páncreas manda saludos.'],duro:['Día sin refresco.'],coach:['¡Día sin refresco cumplido!']}},
+  {re:/alcohol|cerve|chela|pisto|beber|tomar alcohol|licor/i,
+   hate:{brutal:['Hoy no hay chelas, cabrón. Aguanta.','Tu hígado pidió vacaciones. Hoy no tomas, huevón.','{racha} días sin alcohol. ¿Lo vas a tirar por una noche?'],
+         duro:['Hoy no tomas.','{racha} días sin alcohol. No lo rompas.'],
+         coach:['Hoy elige agua o algo sin alcohol. Vas muy bien.','¡{racha} días sin alcohol! Sigue así.']},
+   ok:{brutal:['Día sin alcohol. Tu hígado te debe una.'],duro:['Día sin alcohol.'],coach:['¡Otro día sin alcohol!']}},
+  {re:/agua|hidrat/i,
+   hate:{brutal:['¿Piensas andar con la boca seca todo el día? Te faltan {falta} {unidad} de agua.','Ponte a tomar agua, huevón. Te faltan {falta} {unidad}.','Tus riñones te están mentando la madre. Faltan {falta} {unidad} de agua.','Pareces planta olvidada en la oficina. Toma agua: te faltan {falta} {unidad}.'],
+         duro:['Te faltan {falta} {unidad} de agua. Tómala ya.','Llevas {hecho} de {meta} {unidad}. Sigue tomando agua.'],
+         coach:['Un vaso de agua ahorita y ya llevas menos. Te faltan {falta} {unidad}.','¡Hidrátate! Te faltan {falta} {unidad}.']},
+   ok:{brutal:['Hidratación completa. Tus riñones te lo agradecen, cabrón.'],duro:['Meta de agua cumplida.'],coach:['¡Meta de agua cumplida! Tu cuerpo lo nota.']}},
+  {re:/gym|gimnas|entren|pesas|ejercicio|rutina/i,
+   hate:{brutal:['¿Y el gym, huevón? Hoy toca {rutina}.','Las pesas no se levantan solas. Mueve el trasero al gym.','Tu sillón ya tiene tu forma. Vete al gym, cabrón.','Hoy toca {rutina} y tú ni te has puesto los tenis.'],
+         duro:['Hoy toca {rutina}. Al gym.','El gym no se negocia. Ve hoy.'],
+         coach:['Hoy toca {rutina}. ¡Vamos, tú puedes!','Aunque sea una rutina corta, ve al gym hoy.']},
+   ok:{brutal:['Gym hecho. Hoy sí te ganaste los tacos, cabrón.','Entrenamiento listo. Así se hace, perro.'],duro:['Gym hecho.'],coach:['¡Entrenamiento completo! Excelente.']}},
+  {re:/corr|camin|pasos|cardio|bici/i,
+   hate:{brutal:['Te faltan {falta} {unidad}. Las piernas son para usarse, huevón.','Levántate y camina, que no eres mueble.','{falta} {unidad} pendientes. Muévete, cabrón.'],
+         duro:['Te faltan {falta} {unidad}. Sal a moverte.'],
+         coach:['Una vuelta a la cuadra y ya avanzas. Te faltan {falta} {unidad}.']},
+   ok:{brutal:['Meta cumplida. Esas piernas sí sirven.'],duro:['Meta de movimiento cumplida.'],coach:['¡Meta cumplida! Bien hecho.']}},
+  {re:/le[eé]r|libro|lectura|jurisprud/i,
+   hate:{brutal:['Un libro no muerde, huevón. Te faltan {falta} {unidad} de lectura.','Cero páginas hoy. TikTok no cuenta como lectura, cabrón.','Te faltan {falta} {unidad}. Abre el libro ya.'],
+         duro:['Te faltan {falta} {unidad} de lectura.','Abre el libro. Hoy toca leer.'],
+         coach:['Unas páginas antes de dormir y listo. Te faltan {falta} {unidad}.']},
+   ok:{brutal:['Lectura completa. Tu cerebro te lo agradece.'],duro:['Lectura del día cumplida.'],coach:['¡Lectura completa! Sigue así.']}},
+  {re:/estudi|repas|tarea|c[oó]digo|apuntes|examen|clase/i,
+   hate:{brutal:['Los apuntes no se leen solos, huevón. Te faltan {falta} {unidad}.','¿Así piensas pasar el semestre? Ponte a estudiar, cabrón.','El examen no va a esperar a que se te antoje. A estudiar.'],
+         duro:['Te faltan {falta} {unidad} de estudio.','Hoy toca estudiar. Sin pretextos.'],
+         coach:['Una sesión de enfoque y avanzas mucho. ¡Tú puedes!','Te faltan {falta} {unidad}. Un bloque más y listo.']},
+   ok:{brutal:['Estudio del día listo. Así se pasa el semestre, cabrón.'],duro:['Estudio del día cumplido.'],coach:['¡Estudio completo! Vas muy bien.']}},
+  {re:/dorm|sue[nñ]o|acost|desvel/i,
+   hate:{brutal:['Suelta el celular y duérmete, huevón. Mañana vas a andar como zombi.','Las ojeras no son estilo, cabrón. A dormir.','Ya es hora. Apaga todo y a la cama.'],
+         duro:['Hora de dormir. Apaga el celular.'],
+         coach:['Tu cuerpo necesita descanso. Hora de dormir.']},
+   ok:{brutal:['Te dormiste a tiempo. Milagro.'],duro:['Dormiste a tiempo.'],coach:['¡Buen descanso! Mañana rindes más.']}},
+  {re:/redes|celular|tiktok|instagram|pantalla|scroll/i,
+   hate:{brutal:['Deja de scrollear, huevón. TikTok no te va a pagar la colegiatura.','Llevas horas en el celular. Suéltalo ya, cabrón.','Los reels no se acaban nunca. Tú sí. Suelta el celular.'],
+         duro:['Suelta el celular. Ya fue suficiente.'],
+         coach:['Deja el celular un rato y haz algo que te guste.']},
+   ok:{brutal:['Sobreviviste sin scrollear de más. Respeto.'],duro:['Meta de pantalla cumplida.'],coach:['¡Menos pantalla hoy! Bien hecho.']}},
+  {re:/comer|comida|sano|dieta|verdura|fruta|prote[ií]na|desayun/i,
+   hate:{brutal:['Hoy no todo pueden ser tacos, huevón. Come algo decente.','¿Y las verduras? No muerden, cabrón.'],
+         duro:['Come bien hoy. Sin excusas.'],
+         coach:['Agrega una fruta o verdura hoy. Tu cuerpo lo agradece.']},
+   ok:{brutal:['Comiste bien hoy. Tu cuerpo lo nota.'],duro:['Comida sana cumplida.'],coach:['¡Comiste bien hoy!']}},
+  {re:/medit|respir|mindful/i,
+   hate:{brutal:['Cinco minutos de calma no te van a matar, huevón. Medita.','Tu cabeza es un desmadre. Siéntate y respira.'],
+         duro:['Toca meditar. Unos minutos bastan.'],
+         coach:['Unos minutos de respiración y te sientes mejor.']},
+   ok:{brutal:['Mente en calma. Bien.'],duro:['Meditación cumplida.'],coach:['¡Meditación completa!']}},
+  {re:/creatina|vitamina|suplement|prote[ií]na en polvo|pastilla|medicin/i,
+   hate:{brutal:['{nombre}: ¿qué esperas, huevón? No se hace solo.','Los músculos no salen de la nada, cabrón. {nombre}, ya.'],
+         duro:['Pendiente: {nombre}.'],
+         coach:['No olvides: {nombre}.']},
+   ok:{brutal:['{nombre}: listo. A crecer.'],duro:['{nombre}: hecho.'],coach:['¡{nombre} tomado!']}},
+  {re:/gasto|ahorr|dinero|presupuesto|finanz/i,
+   hate:{brutal:['¿Y tus gastos de hoy, huevón? El dinero no desaparece solo… bueno, sí.','Anota tus gastos, cabrón. Luego no sabes en qué se te fue la quincena.'],
+         duro:['Anota tus gastos de hoy.'],
+         coach:['Dos minutos para anotar tus gastos y listo.']},
+   ok:{brutal:['Gastos anotados. Tu cartera te lo agradece.'],duro:['Gastos registrados.'],coach:['¡Gastos al día!']}},
+  {re:/dient|hilo dental/i,
+   hate:{brutal:['Lávate los dientes, huevón. El dentista cobra caro.'],duro:['Lávate los dientes.'],coach:['Tu sonrisa te lo agradece: lávate los dientes.']},
+   ok:{brutal:['Dientes limpios. Bien.'],duro:['Hecho.'],coach:['¡Sonrisa cuidada!']}}
+];
+function habitMsgs(name,type,tone){
+  tone=TONES[tone]?tone:'brutal';
+  const t=HMSG.find(x=>x.re.test(name||''));
+  if(!t)return toneMsgs(tone,type);
+  return{hate:gfix(t.hate[tone].join('\n')),congrats:gfix(t.ok[tone].join('\n'))};
+}
+function isGenericMsg(txt){
+  const g=curG(),all=[];
+  Object.values(TONES).forEach(t=>[t.qty,t.check,t.ok].forEach(a=>all.push(gfix(a.join('\n'),g))));
+  return !txt||all.includes(String(txt).trim());
+}
 
 const TEMPLATES=[
   {emoji:'💧',name:'Tomar agua',type:'qty',target:3,unit:'L',step:0.5,reminders:['11:00','14:00','17:00','20:00'],color:'#4cc3ff'},
@@ -403,11 +515,11 @@ const TEMPLATES=[
   {emoji:'🚶',name:'Caminar',type:'qty',target:8000,unit:'pasos',step:1000,reminders:['19:00'],color:'#f5d547'},
   {emoji:'🥗',name:'Comer sano',type:'check',reminders:['15:00'],color:'#a3e635'},
   {emoji:'🧘',name:'Meditar',type:'qty',target:10,unit:'min',step:5,reminders:['07:30'],color:'#2dd4bf'},
-  {emoji:'🚭',name:'Sin fumar',type:'avoid',color:'#ff6b6b'},
-  {emoji:'🥤',name:'Sin refresco',type:'avoid',color:'#ff9f43'}
+  {emoji:'🚭',name:'Sin fumar',type:'avoid',reminders:['10:00','16:00','21:00'],color:'#ff6b6b'},
+  {emoji:'🥤',name:'Sin refresco',type:'avoid',reminders:['14:00'],color:'#ff9f43'}
 ];
 function habitFrom(t,tone){
-  const m=toneMsgs(tone,t.type);
+  const m=habitMsgs(t.name,t.type,tone);
   return Object.assign({id:uid(),emoji:'🎯',name:'',type:'check',target:1,unit:'',step:1,days:[0,1,2,3,4,5,6],reminders:[],color:PALETTE[0],paused:false},t,{id:uid(),hate:m.hate,congrats:m.congrats});
 }
 
@@ -416,7 +528,7 @@ function blank(){
   return{v:2,example:false,habits:[],log:{},notes:[],events:[],gym:{0:[],1:[],2:[],3:[],4:[],5:[],6:[]},gymTime:{},alarms:[],
     settings:{name:'',tone:'brutal',mode:'auto',accent:'#f5d547',tint:'suave',font:'moderna',round:'redondo',notif:false,night:'21:30',nightOn:true,
       nightHate:TONES.brutal.nh,nightOk:TONES.brutal.no,shortcut:'Despertador SinExcusas',onboarded:false,
-      pushUrl:'',pushToken:'',pushOn:false,pushKey:'',pushHash:'',lastBackup:0,firstUse:0,installHide:false,pushHide:false,gender:'',examMode:false,weeklyOn:true,weeklyDay:0,weeklyTime:'20:00',tourDone:false},
+      pushUrl:'',pushToken:'',pushOn:false,pushKey:'',pushHash:'',lastBackup:0,firstUse:0,installHide:false,pushHide:false,gender:'',examMode:false,briefOn:true,briefTime:'07:00',voiceOn:false,syncKey:'',claimed:false,lastCloud:0,cloudOn:true,calToken:'',friendToken:'',friendOn:false,pubHash:'',coachAvail:false,srvVersion:0,weeklyOn:true,weeklyDay:0,weeklyTime:'20:00',tourDone:false},
     sent:{},focus:null,body:{age:'',height:'',goal:'',target:'',weighOn:true,weighDay:1,weighTime:'08:00'},weights:[],lifts:[],grades:[],profile:{role:'',career:'',school:'',semester:'',industry:'',workDays:[1,2,3,4,5],workStart:'09:00',workEnd:'17:00'}};
 }
 function withExamples(s){
@@ -464,8 +576,10 @@ let S=null;
 try{S=migrate(JSON.parse(localStorage.getItem(KEY)))}catch(e){}
 if(!S){S=withExamples(blank());silencePast()}
 S.settings=Object.assign(blank().settings,S.settings);if(!S.settings.firstUse)S.settings.firstUse=Date.now();
-S.body=Object.assign(blank().body,S.body||{});S.profile=Object.assign(blank().profile,S.profile||{});['weights','lifts','grades'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[]});
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}mirror();queueSync()}
+S.body=Object.assign(blank().body,S.body||{});S.profile=Object.assign(blank().profile,S.profile||{});
+ensureKeys();if(!S.ach){S.ach={};setTimeout(()=>checkAch(true),0)}
+if(!S.settings.msgV){S.habits.forEach(h=>{const m=habitMsgs(h.name,h.type,S.settings.tone);if(isGenericMsg(h.hate))h.hate=m.hate;if(isGenericMsg(h.congrats))h.congrats=m.congrats});S.settings.msgV=2}['weights','lifts','grades'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[]});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudDirty=true;mirror();queueSync()}
 
 const UI={tab:'hoy',date:today(),noteFilter:'todas',q:'',agSeg:'agenda',agDay:new Date().getDay(),agFilter:'todo',sure:null};
 
@@ -509,9 +623,10 @@ const onDay=(h,d)=>!h.paused&&h.days.includes(d.getDay())&&!(S.settings.examMode
 function fill(t,h,v){
   const target=h.type==='check'?1:h.target;
   const rutina=(S.gym[new Date().getDay()]||[]).join(', ')||'descanso';
-  const line=pick(String(t||'').split('\n').map(x=>x.trim()).filter(Boolean))||'';
+  const sk=/\{racha\}/.test(t||'')?streak(h):0;
+  const line=pick(String(t||'').split('\n').map(x=>x.trim()).filter(x=>x&&(sk>=2||!/\{racha\}/.test(x))))||pick(String(t||'').split('\n').filter(Boolean))||'';
   return line.replace(/\{nombre\}/g,h.name).replace(/\{falta\}/g,fmt(Math.max(0,target-v))).replace(/\{meta\}/g,fmt(target))
-    .replace(/\{unidad\}/g,h.unit||'').replace(/\{hecho\}/g,fmt(v)).replace(/\{rutina\}/g,rutina).replace(/\{yo\}/g,S.settings.name||'').replace(/\s+/g,' ').replace(/\s([.,!?])/g,'$1').trim();
+    .replace(/\{unidad\}/g,h.unit||'').replace(/\{hecho\}/g,fmt(v)).replace(/\{rutina\}/g,rutina).replace(/\{racha\}/g,sk).replace(/\{yo\}/g,S.settings.name||'').replace(/\s+/g,' ').replace(/\s([.,!?])/g,'$1').trim();
 }
 function dayStats(d){
   const k=dkey(d);const hs=S.habits.filter(h=>onDay(h,d));
@@ -533,7 +648,7 @@ function setVal(id,v,key){
       S.sent[key+'|'+id+'|done']=1;
     }else toast('Registrado',h.name+' marcado en '+dayLabel(key)+'.');
   }
-  save();render();
+  save();render();checkAch(false);
 }
 function streak(h){
   let n=0,d=new Date();
@@ -565,6 +680,7 @@ if(canSW){
     if(r.waiting&&navigator.serviceWorker.controller)waitingSW=r.waiting;
     r.addEventListener('updatefound',()=>watch(r.installing));
     mirror(true);
+    navigator.serviceWorker.ready.then(()=>{ensureClaim();checkServer();fetchSteps();fetchScreen()});
   }).catch(()=>{});
   let reloading=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloading){reloading=true;location.reload()}});
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
@@ -577,28 +693,29 @@ function mirror(now){
 const pushActive=()=>!!(S.settings.pushOn&&S.settings.pushUrl);
 function api(path,body){
   return fetch(S.settings.pushUrl.trim().replace(/\/+$/,'')+path,{method:body?'POST':'GET',
-    headers:Object.assign({'content-type':'application/json'},S.settings.pushToken?{'x-token':S.settings.pushToken}:{}),body:body?JSON.stringify(body):undefined});
+    headers:Object.assign({'content-type':'application/json'},S.settings.pushToken?{'x-token':S.settings.pushToken}:{},S.settings.syncKey?{'x-key':S.settings.syncKey}:{}),body:body?JSON.stringify(body):undefined});
 }
 function buildSchedule(){
   const weekly={0:[],1:[],2:[],3:[],4:[],5:[],6:[]},dated={};const add=(a,t)=>{if(t&&!a.includes(t))a.push(t)};
   const k=today(),now=new Date(),dow=now.getDay();
-  S.habits.forEach(h=>{if(!h.paused&&h.type!=='avoid'&&!(S.settings.examMode&&!h.essential))h.days.forEach(d=>(h.reminders||[]).forEach(r=>add(weekly[d],r)))});
+  S.habits.forEach(h=>{if(!h.paused&&!(S.settings.examMode&&!h.essential))h.days.forEach(d=>(h.reminders||[]).forEach(r=>add(weekly[d],r)))});
   if(S.settings.nightOn&&S.settings.night)for(let d=0;d<7;d++)add(weekly[d],S.settings.night);
   S.events.forEach(e=>{if(!e.remind)return;const t=fromMin(toMin(e.start)-e.remind);
     if(e.date){if(e.date>=k){dated[e.date]=dated[e.date]||[];add(dated[e.date],t)}}else e.days.forEach(d=>add(weekly[d],t))});
   S.events.forEach(e=>{if(e.type!=='examen'||!e.pre)return;for(let i=1;i<=e.pre;i++){const dk=dkey(addDays(fromKey(e.date),-i));if(dk>=k){dated[dk]=dated[dk]||[];add(dated[dk],e.preTime||'19:00')}}});
   if(S.settings.weeklyOn)add(weekly[Number(S.settings.weeklyDay)||0],S.settings.weeklyTime||'20:00');
   if(S.body&&S.body.weighOn)add(weekly[Number(S.body.weighDay)],S.body.weighTime||'08:00');
+  if(S.settings.briefOn)for(let d=0;d<7;d++)add(weekly[d],S.settings.briefTime||'07:00');
   Object.values(weekly).forEach(a=>a.sort());
-  const keep=new Set();if(S.settings.nightOn)keep.add(S.settings.night);
+  const keep=new Set();if(S.settings.nightOn)keep.add(S.settings.night);if(S.settings.briefOn)keep.add(S.settings.briefTime||'07:00');
   S.events.forEach(e=>{if(e.type==='examen'&&e.pre){const n=Math.round((fromKey(e.date)-fromKey(k))/864e5);if(n>=1&&n<=e.pre)keep.add(e.preTime||'19:00')}});
   if(S.settings.weeklyOn&&dow===Number(S.settings.weeklyDay))keep.add(S.settings.weeklyTime);if(S.body.weighOn&&dow===Number(S.body.weighDay))keep.add(S.body.weighTime);
   S.events.forEach(e=>{if(e.remind&&(e.date?e.date===k:e.days.includes(dow)))keep.add(fromMin(toMin(e.start)-e.remind))});
-  const skip=weekly[dow].filter(t=>{if(keep.has(t))return false;const hs=S.habits.filter(h=>onDay(h,now)&&(h.reminders||[]).includes(t));return hs.length&&hs.every(h=>isDone(h,val(h,k)))});
+  const skip=weekly[dow].filter(t=>{if(keep.has(t))return false;const hs=S.habits.filter(h=>onDay(h,now)&&(h.reminders||[]).includes(t));return hs.length&&hs.every(h=>h.type!=='avoid'&&isDone(h,val(h,k)))});
   let tz='America/Hermosillo';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz}catch(e){}
-  return{tz,weekly,dated,skip:{date:k,times:skip}};
+  return{tz,weekly,dated,skip:{date:k,times:skip},meta:{tone:S.settings.tone,gender:S.settings.gender||'h',name:(S.settings.name||'').split(' ')[0]}};
 }
-function queueSync(){if(!pushActive())return;clearTimeout(syncT);syncT=setTimeout(syncPush,1500)}
+function queueSync(){if(!pushActive())return;clearTimeout(syncT);syncT=setTimeout(()=>{syncPush();syncPublic();cloudBackup()},1500)}
 async function syncPush(force){
   if(!pushActive())return;const sch=buildSchedule(),str=JSON.stringify(sch);
   if(!force&&str===S.settings.pushHash)return;
@@ -606,6 +723,7 @@ async function syncPush(force){
 }
 function b64u(s){const p='='.repeat((4-s.length%4)%4);const b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))}
 async function connectPush(){
+  ensureKeys();
   if(!S.settings.pushUrl){toast('Falta el link','Pega el link de tu servidor de avisos.');return}
   if(!swReg||!('PushManager' in window)){toast('Todavía no',embedded?'Esto funciona en la app instalada, no en la vista previa.':standalone()?'Tu iPhone necesita iOS 16.4 o más nuevo.':'Abre la app desde su ícono de inicio para activar esto.');return}
   try{
@@ -618,7 +736,7 @@ async function connectPush(){
     if(!sub)sub=await swReg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(key)});
     const sch=buildSchedule();const r=await api('/subscribe',{subscription:sub.toJSON(),schedule:sch});
     if(r.status===401)throw new Error('token');if(!r.ok)throw new Error('sub');
-    S.settings.pushOn=true;S.settings.pushKey=key;S.settings.pushHash=JSON.stringify(sch);save();render();
+    S.settings.pushOn=true;S.settings.pushKey=key;S.settings.claimed=true;checkServer();S.settings.pushHash=JSON.stringify(sch);save();render();
     toast('Conectado','Listo. Los avisos te llegan aunque la app esté cerrada.');
   }catch(e){render();toast('No se pudo conectar',e.message==='token'?'La clave no coincide con la del servidor.':'Revisa el link y que el servidor esté publicado (guía en LEEME.md).')}
 }
@@ -654,7 +772,7 @@ function sysNotify(title,body){
   try{new Notification(title,opts);return true}catch(e){return false}
 }
 function notify(title,body){
-  if(!document.hidden){toast(title,body);return}
+  if(!document.hidden){toast(title,body);if(S.settings.voiceOn)speak(body);return}
   if(pushActive())return;
   sysNotify(title,body);
 }
@@ -666,7 +784,7 @@ function tick(){
     if(!onDay(h,now))return;
     const due=(h.reminders||[]).filter(r=>r<=t&&!S.sent[k+'|'+h.id+'|'+r]);
     if(!due.length)return;due.forEach(r=>S.sent[k+'|'+h.id+'|'+r]=1);changed=true;
-    const v=val(h,k);if(!isDone(h,v))notify(h.emoji+' '+h.name,fill(h.hate,h,v));
+    const v=val(h,k);if(h.type==='avoid'?v<1:!isDone(h,v))notify(h.emoji+' '+h.name,fill(h.hate,h,v));
   });
   eventsOn(now).forEach(e=>{
     if(!e.remind)return;const s=toMin(e.start);const id=k+'|ev|'+e.id+'|'+e.start;
@@ -726,6 +844,8 @@ const ICON={
   scale:sv('<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 9a3 3 0 0 1 6 0M12 9l1.5-1.5"/>'),
   dumbbell:sv('<path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/>'),
   flame:sv('<path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 2-5 5-5 8 0 4 3 7 7 7z"/>'),
+  chat:sv('<path d="M4 5h16v11H9l-5 4z"/>'),
+  speaker:sv('<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a3 3 0 0 1 0 6M18.5 6.5a7 7 0 0 1 0 11"/>'),
   bell:sv('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>')
 };
 const TABS=[['hoy','Hoy'],['habitos','Hábitos'],['agenda','Agenda'],['notas','Notas'],['progreso','Progreso']];
@@ -779,7 +899,7 @@ function vHoy(){
   out+='<section class="card hero"><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="var(--surface2)" stroke-width="8"/>'+
   '<circle cx="50" cy="50" r="46" fill="none" stroke="'+(st.pct===100?'var(--good)':'var(--accent)')+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'"/></svg>'+
   '<div class="lbl"><div><div class="pct num">'+st.pct+'%</div><div class="small muted num">'+st.done.length+' de '+st.hs.length+'</div></div></div></div>'+
-  '<div><div class="eyebrow">'+(isToday?'Tu día':DAYS_FULL[sel.getDay()])+'</div><div class="verdict">'+esc(verdict)+'</div></div></section>';
+  '<div><div class="eyebrow">'+(isToday?'Tu día · nivel '+(S.settings.level||1):DAYS_FULL[sel.getDay()])+'</div><div class="verdict">'+esc(verdict)+'</div>'+(isToday?'<div class="chips" style="margin-top:10px"><button class="chip" data-act="coachOpen">'+ICON.chat.replace('<svg','<svg width="15" height="15"')+' Coach</button>'+(('speechSynthesis' in window)?'<button class="chip" data-act="speakVerdict" aria-label="Escuchar en voz alta">'+ICON.speaker.replace('<svg','<svg width="15" height="15"')+' Oír</button>':'')+'</div>':'')+'</div></section>';
   out+='<section class="card"><div class="card-h"><h2>Hábitos</h2><button class="chip" data-act="newHabit">+ Nuevo</button></div>'+
   (st.hs.length?st.hs.map(h=>habitRow(h,k)).join(''):'<div class="empty">'+(S.habits.length?'Ningún hábito toca este día.':'Toca + Nuevo para crear tu primer hábito.')+'</div>')+'</section>';
   if(!isToday)return out;
@@ -928,6 +1048,9 @@ function vAjustes(){
   '<div class="opt"><div><b>Modo examen</b><div class="hint">Pausa los hábitos que no marcaste como esenciales.</div></div><button class="switch'+(st.examMode?' on':'')+'" data-act="toggleExam" aria-label="Modo examen" aria-pressed="'+!!st.examMode+'"></button></div>'+
   '<div class="opt"><div><b>Resumen semanal</b><div class="hint">Cuánto cumpliste, tu mejor y tu peor hábito.</div></div><button class="switch'+(st.weeklyOn?' on':'')+'" data-act="toggleWeekly" aria-label="Resumen semanal" aria-pressed="'+!!st.weeklyOn+'"></button></div>'+
   (st.weeklyOn?'<form data-form="weekly" class="row" style="margin-top:6px;align-items:end"><div class="f" style="margin:0"><label class="l" for="wkD">Día</label><select id="wkD" name="day">'+WEEK_ORDER.map(i=>'<option value="'+i+'"'+(i===Number(st.weeklyDay)?' selected':'')+'>'+DAYS_FULL[i]+'</option>').join('')+'</select></div><div class="f" style="margin:0"><label class="l" for="wkT">Hora</label><input type="time" id="wkT" name="time" value="'+esc(st.weeklyTime)+'"></div><button class="btn ghost" style="flex:none">Guardar</button></form>':'')+
+  '<div class="opt"><div><b>Briefing de la mañana</b><div class="hint">Tu día resumido: clases, gym, exámenes y lo que fallaste ayer.</div></div><button class="switch'+(st.briefOn?' on':'')+'" data-act="toggleBrief" aria-label="Briefing de la mañana" aria-pressed="'+!!st.briefOn+'"></button></div>'+
+  (st.briefOn?'<form data-form="brief" class="row" style="margin-top:6px;align-items:end"><div class="f" style="margin:0"><label class="l" for="brT">Hora</label><input type="time" id="brT" name="time" value="'+esc(st.briefTime||'07:00')+'"></div><button class="btn ghost" style="flex:none">Guardar</button></form>':'')+
+  '<div class="opt"><div><b>Hablarme en voz alta</b><div class="hint">Te dice el hate en voz alta al abrir la app y cuando te avisa con la app abierta.</div></div><button class="switch'+(st.voiceOn?' on':'')+'" data-act="toggleVoice" aria-label="Voz" aria-pressed="'+!!st.voiceOn+'"></button></div>'+
   '<div class="sep"></div><button class="btn ghost block" data-act="tourStart">Ver el tutorial otra vez</button></section>'+
   '<section class="card"><div class="card-h"><h2>Apariencia</h2></div>'+
   '<div class="preview" style="margin-bottom:16px"><div class="ring" style="width:64px;height:64px">'+miniRing(.72,null,64)+'</div><div><div class="eyebrow">Vista previa</div><div class="verdict" style="font-size:17px">'+esc(gfix(TONES[st.tone].v[2].replace('{n}',2)))+'</div><div class="chips" style="margin-top:8px"><span class="chip sel">Botón</span><span class="chip">Normal</span></div></div></div>'+
@@ -939,7 +1062,7 @@ function vAjustes(){
   '<label class="l">Esquinas</label><div style="margin-top:8px">'+seg('round',[['redondo','Redondas'],['suave','Medias'],['recto','Rectas']],st.round)+'</div></section>'+
   '<section class="card"><div class="card-h"><h2>Instalación</h2>'+(standalone()?'<span class="state ok">Instalada</span>':'<span class="state mid">En navegador</span>')+'</div>'+
   (standalone()?'<div class="small muted">Estás usando la app instalada. Tus datos se guardan en este iPhone.</div>':'<div class="small muted">Para usarla como app normal:</div>'+installSteps())+'</section>'+
-  '<section class="card" id="pushCard"><div class="card-h"><h2>Notificaciones</h2>'+(pushActive()?'<span class="state ok">Siempre</span>':on?'<span class="state mid">Con app abierta</span>':perm==='denied'?'<span class="state no">Bloqueadas</span>':'<span class="state no">Apagadas</span>')+'</div>'+
+  connCard()+'<section class="card" id="pushCard"><div class="card-h"><h2>Notificaciones</h2>'+(pushActive()?'<span class="state ok">Siempre</span>':on?'<span class="state mid">Con app abierta</span>':perm==='denied'?'<span class="state no">Bloqueadas</span>':'<span class="state no">Apagadas</span>')+'</div>'+
   '<div class="small muted" style="margin-bottom:12px">'+(pushActive()?'Tu servidor está conectado. Los avisos llegan aunque la app esté cerrada.':'Sin servidor, los avisos solo salen mientras la app está abierta o recién usada. Conecta tu servidor gratis para recibirlos siempre.')+'</div>'+
   '<form data-form="push"><div class="f"><label class="l" for="pUrl">Link de tu servidor de avisos</label><input type="text" id="pUrl" name="url" inputmode="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="https://sinexcusas.tu-usuario.workers.dev" value="'+esc(st.pushUrl)+'"></div>'+
   '<div class="f"><label class="l" for="pTok">Clave (solo si la pusiste en el servidor)</label><input type="text" id="pTok" name="token" autocapitalize="off" autocomplete="off" value="'+esc(st.pushToken)+'"></div>'+
@@ -973,7 +1096,7 @@ function remRow(v){return '<div class="remrow"><input type="time" name="rem" val
 const delBtn=(act,id,label)=>'<button type="button" class="btn danger block" data-act="'+act+'" data-id="'+id+'">'+label+'</button>';
 
 function quickSheet(){
-  const q=[['newHabit',ICON.habitos,'Hábito'],['newNote',ICON.notas,'Nota'],['newEventP',ICON.person,'Evento'],['newEventC',ICON.cap,'Clase'],['newExam',ICON.agenda,'Examen'],['newGrade',ICON.progreso,'Calificación'],['newWeight',ICON.scale,'Peso'],['newLift',ICON.dumbbell,'Serie del gym'],['newAlarm',ICON.alarm,'Alarma'],['focusOpen',ICON.timer,'Enfoque']];
+  const q=[['newHabit',ICON.habitos,'Hábito'],['newNote',ICON.notas,'Nota'],['newEventP',ICON.person,'Evento'],['newEventC',ICON.cap,'Clase'],['newExam',ICON.agenda,'Examen'],['newGrade',ICON.progreso,'Calificación'],['newWeight',ICON.scale,'Peso'],['newLift',ICON.dumbbell,'Serie del gym'],['newAlarm',ICON.alarm,'Alarma'],['focusOpen',ICON.timer,'Enfoque'],['coachOpen',ICON.chat,'Coach']];
   openSheet(head('Agregar')+'<div class="quick">'+q.filter(x=>isStudent()||S.profile.role===''||!['newExam','newGrade'].includes(x[0])).map(([a,i,l])=>'<button data-act="'+a+'">'+i+l+'</button>').join('')+'</div>');
 }
 function templateSheet(){
@@ -993,9 +1116,9 @@ function habitForm(h,isNew){
   '<div class="f"><label class="l" for="hU">Unidad</label><input type="text" id="hU" name="unit" value="'+esc(h.unit)+'" placeholder="L, min, páginas"></div>'+
   '<div class="f"><label class="l" for="hS">Cada toque suma</label><input type="number" inputmode="decimal" step="any" min="0" id="hS" name="step" value="'+h.step+'"></div></div><div class="hint" style="margin:-8px 0 14px">Si la unidad es <b>min</b>, aparece un botón para hacer sesiones de enfoque con cronómetro.</div></div>'+
   '<div class="f"><label class="l">Qué días</label>'+dayPick(h.days)+'<div class="chips" style="margin-top:4px"><button type="button" class="chip" data-act="daysAll">Todos</button><button type="button" class="chip" data-act="daysWeek">Lun a vie</button><button type="button" class="chip" data-act="daysEnd">Fin de semana</button></div></div>'+
-  '<div class="hint" id="avoidHint"'+(h.type==='avoid'?'':' hidden')+' style="margin:-6px 0 14px">Cuenta los días que llevas sin hacerlo. Solo tocas <b>Caí</b> el día que recaigas.</div>'+
-  '<div id="remF"'+(h.type==='avoid'?' hidden':'')+'>'+
-  '<div class="f"><label class="l">Horas en que te avisa si no lo has hecho</label><div id="rems">'+(h.reminders.length?h.reminders.map(remRow).join(''):'')+'</div>'+
+  '<div class="hint" id="avoidHint"'+(h.type==='avoid'?'':' hidden')+' style="margin:-6px 0 14px">Cuenta los días que llevas sin hacerlo. Solo tocas <b>Caí</b> el día que recaigas. A las horas de aviso te llega el mensaje para que no caigas.</div>'+
+  '<div id="remF">'+
+  '<div class="f"><label class="l">Horas de aviso</label><div id="rems">'+(h.reminders.length?h.reminders.map(remRow).join(''):'')+'</div>'+
   '<button type="button" class="chip" data-act="remAdd" style="align-self:flex-start">+ Agregar hora</button>'+
   '<div class="interval"><div><label for="ivF">Desde</label><input type="time" id="ivF" value="09:00"></div><div><label for="ivT">Hasta</label><input type="time" id="ivT" value="21:00"></div><div><label for="ivE">Cada</label><select id="ivE"><option value="60">1 h</option><option value="90">1.5 h</option><option value="120" selected>2 h</option><option value="180">3 h</option><option value="240">4 h</option></select></div><button type="button" class="btn sm" data-act="remGen">Generar</button></div></div>'+
   '<div class="f"><label class="l" for="hH">Mensajes si NO cumples</label><textarea id="hH" name="hate" rows="4">'+esc(h.hate)+'</textarea>'+
@@ -1213,6 +1336,7 @@ function extraDue(now){
   if(S.settings.weeklyOn&&now.getDay()===Number(S.settings.weeklyDay)&&(S.settings.weeklyTime||'20:00')<=t&&S.habits.length)out.push(Object.assign({id:'week'},weeklySummary()));
   if(S.body.weighOn&&now.getDay()===Number(S.body.weighDay)&&(S.body.weighTime||'08:00')<=t&&!weighedRecently(now)&&(S.weights.length||S.body.goal))
     out.push({id:'weigh',title:'Hora de pesarte',body:toneSay('Ya pasó una semana y no te has pesado, huevón. Súbete a la báscula.','Toca pesarte. Registra tu peso hoy.','Hoy toca pesarte. Registra cómo vas.')});
+  if(S.settings.briefOn&&(S.settings.briefTime||'07:00')<=t&&t<'12:00'&&(S.habits.length||S.events.length))out.push(Object.assign({id:'brief'},briefing(now)));
   return out;
 }
 const dayLabelFull=k=>{const d=fromKey(k);return DAYS[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()].slice(0,3)};
@@ -1226,7 +1350,7 @@ function upsertWeight(date,kg,silent){
   if(i>=0)S.weights[i].kg=kg;else S.weights.push({date,kg});
   if(silent)return;
   const t=Number(S.body.target)||0,g=S.body.goal;
-  if(t&&prev&&((g==='bajar'&&kg<=t&&prev.kg>t)||(g==='subir'&&kg>=t&&prev.kg<t))){notify('Meta alcanzada',toneSay('Llegaste a '+fmt(kg)+' kg. Lo lograste, cabrón. Ahora a mantenerlo.','Llegaste a '+fmt(kg)+' kg. Meta cumplida.','¡Llegaste a '+fmt(kg)+' kg! Meta cumplida.'));confetti(true);return}
+  if(t&&prev&&((g==='bajar'&&kg<=t&&prev.kg>t)||(g==='subir'&&kg>=t&&prev.kg<t))){S.settings.goalHit=true;notify('Meta alcanzada',toneSay('Llegaste a '+fmt(kg)+' kg. Lo lograste, cabrón. Ahora a mantenerlo.','Llegaste a '+fmt(kg)+' kg. Meta cumplida.','¡Llegaste a '+fmt(kg)+' kg! Meta cumplida.'));confetti(true);return}
   if(!prev||!g){toast('Peso registrado',fmt(kg)+' kg.'+(g?'':' Ponte una meta en Progreso → Cuerpo para que te diga cómo vas.'));return}
   const d=Math.round((kg-prev.kg)*10)/10,a=fmt(Math.abs(d));
   if(g==='mantener'){if(Math.abs(d)>1)notify('Ojo con tu peso',(d>0?'Subiste ':'Bajaste ')+a+' kg y tu meta es mantener. Revisa qué cambió esta semana.');else toast('Peso registrado','Te mantienes. Bien.');return}
@@ -1372,8 +1496,8 @@ function examForm(e){
 }
 function vProgreso(){
   const s=UI.prSeg||'habitos';
-  return '<div class="seg">'+[['habitos','Hábitos'],['cuerpo','Cuerpo'],['gym','Gym']].map(([v,l])=>'<button class="'+(s===v?'sel':'')+'" data-act="prSeg" data-v="'+v+'">'+l+'</button>').join('')+'</div>'+
-    (s==='cuerpo'?vCuerpo():s==='gym'?vLifts():vProgresoHabitos());
+  return '<div class="seg">'+[['habitos','Hábitos'],['cuerpo','Cuerpo'],['gym','Gym'],['logros','Logros']].map(([v,l])=>'<button class="'+(s===v?'sel':'')+'" data-act="prSeg" data-v="'+v+'">'+l+'</button>').join('')+'</div>'+
+    (s==='cuerpo'?vCuerpo():s==='gym'?vLifts():s==='logros'?vLogros():vProgresoHabitos());
 }
 
 /* ---------- perfil: estudio / trabajo ---------- */
@@ -1475,6 +1599,355 @@ function paraTi(){
     (sug.length?'<div class="list" style="margin-top:6px">'+sug.slice(0,3).map(x=>'<div class="li"><div class="grow"><b>'+esc(x.t)+'</b><div class="small muted">'+esc(x.b)+'</div></div><button class="btn sm" data-act="'+x.a+'"'+(x.v?' data-v="'+x.v+'"':'')+'>'+x.l+'</button></div>').join('')+'</div>':'')+'</section>';
 }
 
+/* ---------- conexiones: clave, nube, calendario, compañero, pasos ---------- */
+function genKey(n){const a=new Uint8Array(n||18);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<a.length;i++)a[i]=Math.random()*256}const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';return Array.from(a,x=>c[x%c.length]).join('')}
+function ensureKeys(){let ch=false;['syncKey','calToken','friendToken'].forEach(k=>{if(!S.settings[k]){S.settings[k]=genKey(k==='syncKey'?24:20);ch=true}});if(ch)try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const srv=()=>(S.settings.pushUrl||'').trim().replace(/\/+$/,'');
+const srvHost=()=>srv().replace(/^https?:\/\//,'');
+async function ensureClaim(){
+  if(!pushActive()||S.settings.claimed||!swReg)return;
+  try{const sub=await swReg.pushManager.getSubscription();if(!sub)return;
+    const r=await api('/subscribe',{subscription:sub.toJSON(),schedule:buildSchedule()});
+    if(r.ok){S.settings.claimed=true;save()}
+    else if(r.status===401)toast('Tu servidor tiene otra clave','Si cambiaste de teléfono, usa “Restaurar desde la nube” con tu clave anterior.');
+  }catch(e){}
+}
+async function checkServer(){
+  if(!srv())return;
+  try{const r=await fetch(srv()+'/');const d=await r.json();S.settings.coachAvail=!!d.coach;S.settings.srvVersion=d.version||1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}catch(e){}
+}
+let cloudDirty=false,cloudT=null;
+function markCloud(){cloudDirty=true}
+async function cloudBackup(force){
+  if(!pushActive()||!S.settings.cloudOn||(!cloudDirty&&!force))return;
+  const wait=10*60e3-(Date.now()-(S.settings.lastCloud||0));
+  if(!force&&wait>0){clearTimeout(cloudT);cloudT=setTimeout(()=>cloudBackup(false),Math.min(wait,15*60e3));return}
+  try{const at=Date.now();const r=await api('/backup',{data:S,at});
+    if(r.ok){cloudDirty=false;S.settings.lastCloud=at;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(force===2)toast('Respaldo en la nube','Listo. Tus datos están a salvo.')}
+    else if(force===2)toast('No se pudo respaldar',r.status===401?'La clave no coincide con tu servidor.':'Actualiza tu servidor con el worker.js nuevo.');
+  }catch(e){if(force===2)toast('Sin conexión','Lo intento de nuevo más tarde.')}
+}
+async function restoreCloud(url,key){
+  url=url.trim().replace(/\/+$/,'');if(!/^https:\/\//.test(url)){toast('Revisa el link','Debe empezar con https://');return}
+  try{const r=await fetch(url+'/backup',{headers:{'x-key':key.trim()}});
+    if(r.status===401){toast('Clave incorrecta','Revisa tu clave de respaldo.');return}
+    if(!r.ok){toast('Sin respaldo','Ese servidor todavía no tiene un respaldo.');return}
+    const d=await r.json();const data=migrate(d.data);if(!data)throw 0;
+    S=data;S.settings=Object.assign(blank().settings,S.settings,{pushUrl:url,syncKey:key.trim(),pushOn:false,claimed:false,pushHash:'',pubHash:''});
+    S.body=Object.assign(blank().body,S.body||{});S.profile=Object.assign(blank().profile,S.profile||{});['weights','lifts','grades'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[]});
+    save();applyTheme();closeSheet();UI.tab='ajustes';render();
+    toast('Restaurado','Ya están tus datos. Ahora toca Conectar en Notificaciones para recibir avisos en este iPhone.');
+  }catch(e){toast('No se pudo','Revisa el link de tu servidor y tu conexión.')}
+}
+function buildPublic(){
+  const now=new Date(),k=today();
+  const evs=S.events.map(e=>({id:e.id,title:e.type==='examen'?'Examen: '+e.title:e.title,place:e.place||'',start:e.start,end:e.end,days:e.date?[]:(e.days||[]),date:e.date||'',kind:KIND[e.type]||''}));
+  Object.keys(S.gym).forEach(d=>{const g=S.gym[d]||[];if(g.length&&S.gymTime[d])evs.push({id:'gym'+d,title:'Gym: '+g.join(', '),place:'',start:S.gymTime[d],end:fromMin(toMin(S.gymTime[d])+75),days:[Number(d)],date:'',kind:'Gym'})});
+  let friend=null;
+  if(S.settings.friendOn){const st=dayStats(now);let wk=0,c=0;for(let i=0;i<7;i++){const s=dayStats(addDays(now,-i));if(s.hs.length){wk+=s.pct;c++}}
+    friend={token:S.settings.friendToken,name:(S.settings.name||'Tu compa').split(' ')[0],date:k,today:{done:st.done.length,total:st.hs.length},week:c?Math.round(wk/c):0,
+      habits:st.hs.map(h=>({emoji:h.emoji,name:h.name,done:isDone(h,val(h,k)),streak:streak(h)})),updated:dayLabel(k)+' a las '+hm(now)}}
+  let tz='America/Hermosillo';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz}catch(e){}
+  return{tz,cal:{token:S.settings.calToken,events:evs},friend};
+}
+async function syncPublic(){
+  if(!pushActive())return;const p=buildPublic();
+  const h=JSON.stringify(p,(k,v)=>k==='updated'?undefined:v);if(h===S.settings.pubHash)return;
+  try{const r=await api('/public',p);if(r.ok){S.settings.pubHash=h;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}}catch(e){}
+}
+const stepsHabit=()=>S.habits.find(h=>h.type==='qty'&&/pasos/i.test(h.unit||''));
+async function fetchSteps(){
+  const h=stepsHabit();if(!pushActive()||!h)return;
+  try{const r=await api('/pasos');if(!r.ok)return;const d=await r.json();const n=Number(d[today()]||0);
+    if(n>val(h,today()))setVal(h.id,n,today());}catch(e){}
+}
+async function fetchScreen(){
+  if(!pushActive())return;
+  try{const r=await api('/pantalla');if(r.ok){UI.screen=await r.json();if(UI.tab==='ajustes'||UI.tab==='progreso')render()}}catch(e){}
+}
+function copyText(t){
+  try{navigator.clipboard.writeText(t).then(()=>toast('Copiado','Ya puedes pegarlo.')).catch(()=>toast('Mantén presionado','Selecciona el texto y copia.'))}catch(e){toast('Mantén presionado','Selecciona el texto y copia.')}
+}
+const copyBox=(t,label)=>'<div class="copybox"><code>'+esc(t)+'</code><button type="button" class="btn sm" data-act="copyText" data-v="'+esc(t)+'">'+(label||'Copiar')+'</button></div>';
+
+/* ---------- briefing ---------- */
+function briefing(now){
+  const k=dkey(now),dow=now.getDay(),name=(S.settings.name||'').split(' ')[0],parts=[];
+  const ev=eventsOn(now).filter(e=>e.type!=='gym');
+  if(ev.length)parts.push('Hoy: '+ev.slice(0,4).map(e=>(e.subject||e.title)+' '+e.start).join(', ')+'.');
+  const g=S.gym[dow]||[];if(g.length)parts.push('Gym: '+g.join(', ')+(S.gymTime[dow]?' a las '+S.gymTime[dow]:'')+'.');
+  const ex=S.events.filter(e=>e.type==='examen'&&e.date>=k).sort((a,b)=>a.date.localeCompare(b.date))[0];
+  if(ex){const n=Math.round((fromKey(ex.date)-fromKey(k))/864e5);if(n<=3)parts.push('Examen de '+(ex.subject||ex.title)+(n===0?' hoy':n===1?' mañana':' en '+n+' días')+'.')}
+  const y=addDays(now,-1),yk=dkey(y),miss=S.habits.filter(h=>onDay(h,y)&&!isDone(h,val(h,yk)));
+  if(miss.length)parts.push('Ayer fallaste: '+miss.slice(0,3).map(h=>h.name.toLowerCase()).join(', ')+'.');
+  const st=dayStats(now);if(st.hs.length)parts.push(st.hs.length+(st.hs.length===1?' hábito':' hábitos')+' para hoy.');
+  parts.push(toneSay(miss.length?'Hoy no la cagues, cabrón.':'Sin excusas, cabrón.',miss.length?'Hoy se corrige.':'A darle.',miss.length?'Hoy es un nuevo día. ¡Tú puedes!':'¡Que sea un gran día!'));
+  return{title:'Buenos días'+(name?', '+name:''),body:parts.join(' ')};
+}
+
+/* ---------- voz ---------- */
+let spokeThisOpen=false;
+function speak(text){
+  if(!('speechSynthesis' in window)||!text)return false;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,''));
+    u.lang='es-MX';u.rate=1.03;const v=speechSynthesis.getVoices().find(x=>/es[-_]MX/i.test(x.lang))||speechSynthesis.getVoices().find(x=>/^es/i.test(x.lang));if(v)u.voice=v;
+    speechSynthesis.speak(u);return true}catch(e){return false}
+}
+function currentVerdict(){
+  const st=dayStats(new Date()),pend=st.hs.length-st.done.length,T=TONES[S.settings.tone]||TONES.brutal;
+  if(!st.hs.length)return '';const v=pend===0?T.v[0]:st.done.length===0?T.v[3]:pend===1?T.v[1]:T.v[2].replace('{n}',pend);
+  const nx=st.hs.find(h=>!isDone(h,val(h,today())));
+  return gfix(v)+(nx&&pend>0?' '+fill(nx.hate,nx,val(nx,today())):'');
+}
+document.addEventListener('pointerdown',()=>{if(S.settings.voiceOn&&!spokeThisOpen&&UI.tab==='hoy'){spokeThisOpen=true;const t=currentVerdict();if(t)setTimeout(()=>speak(t),150)}},{capture:true});
+
+/* ---------- coach ---------- */
+function coachContext(){
+  const now=new Date(),k=today(),st=dayStats(now),lines=[];
+  lines.push('Fecha y hora: '+DAYS_FULL[now.getDay()]+' '+now.getDate()+' de '+MONTHS[now.getMonth()]+', '+hm(now)+'.');
+  if(S.profile.role)lines.push('Perfil: '+roleLabel()+'.');
+  lines.push('Hábitos de hoy ('+st.done.length+' de '+st.hs.length+' cumplidos):');
+  st.hs.forEach(h=>{const v=val(h,k);lines.push('- '+h.name+': '+(h.type==='qty'?fmt(v)+'/'+fmt(h.target)+' '+h.unit:h.type==='avoid'?(v>=1?'recayó hoy':'sin recaer, '+streak(h)+' días'):(isDone(h,v)?'hecho':'pendiente'))+'; racha '+streak(h)+'; cumplimiento 30 días '+rate(h,30)+'%; avisos '+(h.reminders||[]).join(', '))});
+  let wk=[];for(let i=6;i>=0;i--){const s=dayStats(addDays(now,-i));wk.push(DAYS[addDays(now,-i).getDay()]+' '+s.pct+'%')}lines.push('Últimos 7 días: '+wk.join(', ')+'.');
+  const ag=d=>eventsOn(d).map(e=>(KIND[e.type]||'')+' '+(e.subject||e.title)+' '+e.start+'-'+e.end).join('; ')||'nada';
+  lines.push('Agenda de hoy: '+ag(now)+'.');lines.push('Agenda de mañana: '+ag(addDays(now,1))+'.');
+  const g=S.gym[now.getDay()]||[];lines.push('Rutina de gym hoy: '+(g.join(', ')||'descanso')+'.');
+  const ex=S.events.filter(e=>e.type==='examen'&&e.date>=k).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  if(ex.length)lines.push('Próximos exámenes: '+ex.map(e=>e.title+' el '+e.date).join('; ')+'.');
+  const subs=subjects().map(s=>[s,subjAvg(s)]).filter(x=>x[1]!=null);if(subs.length)lines.push('Promedios (0-100, se aprueba con 60): '+subs.map(x=>x[0]+' '+Math.round(x[1])).join('; ')+'.');
+  const ws=sortedW();if(ws.length)lines.push('Peso: último '+ws[ws.length-1].kg+' kg'+(ws.length>1?' (antes '+ws[Math.max(0,ws.length-5)].kg+' kg)':'')+(S.body.goal?'; meta: '+S.body.goal+(S.body.target?' a '+S.body.target+' kg':''):'')+'.');
+  const pend=S.notes.filter(n=>!n.done&&n.due).slice(0,5);if(pend.length)lines.push('Entregas pendientes: '+pend.map(n=>n.title+' ('+n.due+')').join('; ')+'.');
+  if(UI.screen&&UI.screen.total)lines.push('Hoy abrió apps de distracción '+UI.screen.total+' veces.');
+  return lines.join('\n');
+}
+const COACH_SUG=['Organiza mi semana','¿Qué hábito estoy fallando más?','Dame un plan para mi próximo examen','Motívame para ir al gym hoy'];
+function coachSheet(){
+  if(!Array.isArray(S.chat))S.chat=[];
+  const avail=pushActive()&&S.settings.coachAvail;
+  const msgs=S.chat.slice(-30).map(m=>'<div class="bub '+(m.role==='user'?'me':'ai')+'">'+esc(m.content).replace(/\n/g,'<br>')+'</div>').join('');
+  openSheet(head('Tu coach · '+TONES[S.settings.tone].label)+
+    (avail?'':'<div class="viewing" style="margin-bottom:12px"><span>'+(pushActive()?'Para activar el coach agrega tu clave de la API de Anthropic en Cloudflare.':'Primero conecta tu servidor en Personalizar → Notificaciones.')+'</span><button class="btn sm" data-act="connOpen" data-v="coach">Cómo</button></div>')+
+    '<div class="chat" id="chat">'+(msgs||'<div class="empty">Pregúntame lo que quieras sobre tus hábitos, tu semana o tus exámenes. Veo tus datos de la app para responderte.</div>')+'</div>'+
+    '<div class="chips scroll" style="margin:10px -16px">'+COACH_SUG.map(s=>'<button type="button" class="chip" data-act="coachAsk" data-v="'+esc(s)+'">'+esc(s)+'</button>').join('')+'</div>'+
+    '<form data-form="coach" style="display:flex;gap:8px"><input type="text" id="coachIn" name="q" placeholder="Escríbele a tu coach" autocomplete="off"'+(avail?'':' disabled')+'><button class="btn" style="flex:none"'+(avail?'':' disabled')+'>Enviar</button></form>'+
+    (S.chat.length?'<button type="button" class="btn ghost sm" style="margin-top:10px;border:0;background:none" data-act="coachClear">Borrar conversación</button>':''));
+  const c=document.getElementById('chat');c.scrollTop=c.scrollHeight;
+}
+async function coachSend(q){
+  q=(q||'').trim();if(!q)return;if(!Array.isArray(S.chat))S.chat=[];
+  S.chat.push({role:'user',content:q});save();coachSheet();
+  const c=document.getElementById('chat');c.insertAdjacentHTML('beforeend','<div class="bub ai typing" id="typing">Escribiendo…</div>');c.scrollTop=c.scrollHeight;
+  try{const r=await api('/coach',{messages:S.chat.slice(-12),context:coachContext()});const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.text){S.chat.push({role:'assistant',content:d.text});S.chat=S.chat.slice(-40);save();if(S.settings.voiceOn)speak(d.text)}
+    else{S.chat.pop();toast('El coach no respondió',d.msg||('Error '+r.status))}
+  }catch(e){S.chat.pop();toast('Sin conexión','Revisa tu internet e intenta de nuevo.')}
+  if(!document.getElementById('sheet').hidden)coachSheet();
+}
+
+/* ---------- guías de conexión ---------- */
+function connStatus(kind){
+  const on=pushActive();
+  if(!on)return '<span class="state no">Conecta tu servidor</span>';
+  if(kind==='cloud')return S.settings.lastCloud?'<span class="state ok">'+dayLabel(dkey(new Date(S.settings.lastCloud)))+'</span>':'<span class="state mid">Pendiente</span>';
+  if(kind==='friend')return S.settings.friendOn?'<span class="state ok">Activo</span>':'<span class="state mid">Apagado</span>';
+  if(kind==='pausa')return UI.screen&&UI.screen.date===today()?'<span class="state mid">'+UI.screen.total+' hoy</span>':'<span class="state mid">Atajos</span>';
+  if(kind==='coach')return S.settings.coachAvail?'<span class="state ok">Listo</span>':'<span class="state mid">Falta clave</span>';
+  if(kind==='pasos')return stepsHabit()?'<span class="state mid">Atajos</span>':'<span class="state mid">Sin hábito</span>';
+  return '<span class="state mid">Atajos</span>';
+}
+const CONN=[['cloud','Respaldo en la nube','Tus datos a salvo si cambias o pierdes el teléfono'],['cal','Calendario del iPhone','Clases, exámenes y trabajo en la app Calendario y sus widgets'],['friend','Compañero de racha','Un amigo ve si cumpliste hoy'],['pausa','Pausa anti-scroll','Un freno cada vez que abres TikTok o Instagram'],['mision','Misión al despertar','Resuelve una operación al apagar la alarma'],['pasos','Pasos de Salud','Tus pasos se registran solos'],['coach','Coach con IA','Pregúntale lo que sea, en tu tono']];
+function connCard(){
+  return '<section class="card" id="connCard"><div class="card-h"><h2>Conexiones</h2></div>'+(pushActive()?'':'<div class="hint" style="margin-bottom:8px">Todas usan tu servidor de Cloudflare. Conéctalo primero en Notificaciones.</div>')+
+    '<div class="list">'+CONN.map(([k,t,d])=>'<div class="li" data-act="connOpen" data-v="'+k+'" style="cursor:pointer"><div class="grow"><b>'+t+'</b><div class="small muted">'+d+'</div></div>'+connStatus(k)+'</div>').join('')+'</div></section>';
+}
+function connSheet(kind){
+  const base=srv()||'https://TU-SERVIDOR.workers.dev',k=S.settings.syncKey,ok=pushActive();
+  const needs=ok?'':'<div class="viewing" style="margin-bottom:12px"><span>Primero conecta tu servidor en Notificaciones.</span></div>';
+  const oldSrv=ok&&(S.settings.srvVersion||1)<2?'<div class="viewing" style="margin-bottom:12px;background:color-mix(in srgb,var(--bad) 20%,var(--surface2))"><span>Actualiza tu servidor: pega el worker.js nuevo en Cloudflare y toca Deploy.</span></div>':'';
+  let h='';
+  if(kind==='cloud'){
+    h=head('Respaldo en la nube')+needs+oldSrv+'<p class="muted" style="margin-top:0">Cada vez que usas la app se guarda una copia en tu servidor (máximo cada 10 minutos). Si cambias de iPhone, la recuperas con tu clave.</p>'+
+    '<div class="opt"><b>Respaldo automático</b><button class="switch'+(S.settings.cloudOn?' on':'')+'" data-act="toggleCloud" aria-label="Respaldo automático" aria-pressed="'+!!S.settings.cloudOn+'"></button></div>'+
+    '<div class="small muted" style="margin:6px 0 10px">Último respaldo: <b>'+(S.settings.lastCloud?dayLabel(dkey(new Date(S.settings.lastCloud)))+' a las '+hm(new Date(S.settings.lastCloud)):'nunca')+'</b></div>'+
+    '<button class="btn block" data-act="cloudNow"'+(ok?'':' disabled')+'>Respaldar ahora</button>'+
+    '<div class="sep"></div><label class="l">Tu clave de respaldo</label><div class="hint" style="margin:4px 0 8px">Guárdala en tus Notas o en un lugar seguro. Sin ella no se puede recuperar el respaldo.</div>'+copyBox(k)+
+    '<div class="sep"></div><h3 style="margin:0 0 8px">¿Teléfono nuevo?</h3><form data-form="restore"><div class="f"><label class="l" for="rsU">Link de tu servidor</label><input type="text" id="rsU" name="url" inputmode="url" autocapitalize="off" value="'+esc(srv())+'" placeholder="https://sinexcusas.tu-usuario.workers.dev"></div>'+
+    '<div class="f"><label class="l" for="rsK">Clave de respaldo</label><input type="text" id="rsK" name="key" autocapitalize="off" autocomplete="off" placeholder="Pega tu clave"></div><button class="btn ghost block">Restaurar desde la nube</button><div class="hint" style="margin-top:6px">Reemplaza los datos de este teléfono por los del respaldo.</div></form>';
+  }else if(kind==='cal'){
+    const url='https://'+srvHost()+'/cal/'+S.settings.calToken+'.ics';
+    h=head('Calendario del iPhone')+needs+oldSrv+'<p class="muted" style="margin-top:0">Tus clases, exámenes, trabajo y gym aparecen en la app Calendario, en sus widgets y en la pantalla de bloqueo. Se actualiza solo cada vez que cambias algo aquí.</p>'+
+    (ok?'<a class="btn block" href="webcal://'+esc(srvHost())+'/cal/'+esc(S.settings.calToken)+'.ics">Agregar a Calendario</a>':'')+
+    '<div class="sep"></div><div class="small muted" style="margin-bottom:8px">Si el botón no abre Calendario: Ajustes del iPhone → Calendario → Cuentas → Agregar cuenta → Otra → <b>Agregar calendario suscrito</b> y pega:</div>'+copyBox(url)+
+    '<div class="hint" style="margin-top:8px">Tip: en el widget de Calendario de tu pantalla de inicio verás tu siguiente clase o examen.</div>';
+  }else if(kind==='friend'){
+    const url=base+'/amigo/'+S.settings.friendToken;
+    h=head('Compañero de racha')+needs+oldSrv+'<p class="muted" style="margin-top:0">Tu compa abre un link y ve tu porcentaje de hoy, tus hábitos hechos y pendientes, y tus rachas. No ve tu peso, calificaciones, notas ni agenda.</p>'+
+    '<div class="opt"><b>Compartir mi progreso</b><button class="switch'+(S.settings.friendOn?' on':'')+'" data-act="toggleFriend" aria-label="Compartir progreso" aria-pressed="'+!!S.settings.friendOn+'"></button></div>'+
+    (S.settings.friendOn?'<div style="margin-top:10px">'+copyBox(url)+'</div><button class="btn block" style="margin-top:10px" data-act="shareFriend" data-v="'+esc(url)+'">Mandárselo a mi compa</button><div class="hint" style="margin-top:8px">Si apagas esto, el link deja de funcionar. Al prenderlo otra vez se genera uno nuevo.</div>':'');
+  }else if(kind==='pausa'){
+    const u1=base+'/pausa?k='+k,u2=base+'/pausa?k='+k+'&salir=1',sc=UI.screen&&UI.screen.date===today()?UI.screen:null;
+    h=head('Pausa anti-scroll')+needs+oldSrv+'<p class="muted" style="margin-top:0">Cada vez que abres una app de distracción te sale un mensaje con cuántas veces la has abierto hoy, y puedes salirte con un toque. iOS no deja que una app bloquee a otra, así que esto se arma con Atajos.</p>'+
+    (sc?'<div class="stat" style="margin-bottom:12px"><div><span class="small muted">Aperturas hoy</span><b class="num">'+sc.total+'</b></div><div><span class="small muted">Te saliste</span><b class="num">'+sc.exits+'</b></div><div><span class="small muted">La peor</span><b style="font-size:16px">'+esc(Object.entries(sc.apps||{}).sort((a,b)=>b[1]-a[1]).map(x=>x[0])[0]||'—')+'</b></div></div>':'')+
+    '<ol class="steps"><li>Abre <b>Atajos</b> → pestaña <b>Automatización</b> → <b>+</b> → <b>App</b>.</li>'+
+    '<li>Elige Instagram, TikTok y las que quieras. Marca <b>Se abre</b> y elige <b>Ejecutar inmediatamente</b>. Toca <b>Siguiente</b> → <b>Nuevo atajo en blanco</b>.</li>'+
+    '<li>Agrega <b>Obtener contenido de URL</b> con esta dirección:</li></ol>'+copyBox(u1)+
+    '<ol class="steps" start="4"><li>Agrega <b>Obtener valor del diccionario</b>: valor de la clave <code>msg</code>.</li>'+
+    '<li>Agrega <b>Seleccionar del menú</b>. En la pregunta pon la variable <b>Valor del diccionario</b>. Deja dos opciones: <b>Salir</b> y <b>Seguir</b>.</li>'+
+    '<li>Dentro de <b>Salir</b> agrega <b>Obtener contenido de URL</b> con la dirección de abajo y luego <b>Ir a la pantalla de inicio</b>.</li></ol>'+copyBox(u2)+
+    '<div class="hint" style="margin-top:8px">Opcional: si haces una automatización por app y agregas <code>&app=TikTok</code> al final de la primera dirección, te dice cuántas veces abriste esa app en específico.</div>';
+  }else if(kind==='mision'){
+    const u1=base+'/mision?k='+k,u2=base+'/mision/ok?k='+k+'&r=';
+    h=head('Misión al despertar')+needs+oldSrv+'<p class="muted" style="margin-top:0">Al apagar tu alarma te sale una multiplicación. Si no la resuelves, te llega hate a los 5, 10 y 15 minutos.</p>'+
+    '<ol class="steps"><li>En <b>Atajos</b> → <b>Automatización</b> → <b>+</b> → <b>Alarma</b> → <b>Se detiene</b> → la alarma de la mañana → <b>Ejecutar inmediatamente</b> → <b>Nuevo atajo en blanco</b>.</li>'+
+    '<li>Agrega <b>Obtener contenido de URL</b>:</li></ol>'+copyBox(u1)+
+    '<ol class="steps" start="3"><li>Agrega <b>Obtener valor del diccionario</b>: clave <code>msg</code>.</li>'+
+    '<li>Agrega <b>Repetir</b> y ponle <b>3</b> veces. Dentro de Repetir:</li></ol>'+
+    '<ol class="steps" type="a" style="padding-left:34px"><li><b>Solicitar entrada</b>: tipo <b>Número</b>, pregunta = <b>Valor del diccionario</b>.</li>'+
+    '<li><b>Obtener contenido de URL</b> con esta dirección, y al final pega la variable <b>Entrada proporcionada</b>:</li></ol>'+copyBox(u2)+
+    '<ol class="steps" type="a" start="3" style="padding-left:34px"><li><b>Obtener valor del diccionario</b>: clave <code>bien</code>. Luego otro <b>Obtener valor del diccionario</b>: clave <code>msg</code> del mismo Contenido de URL.</li>'+
+    '<li><b>Si</b> el valor de <code>bien</code> <b>es</b> <code>si</code>: <b>Mostrar notificación</b> con msg y <b>Detener este atajo</b>. <b>De lo contrario</b>: <b>Mostrar alerta</b> con msg.</li></ol>';
+  }else if(kind==='pasos'){
+    const u=base+'/pasos?k='+k+'&n=',sh=stepsHabit();
+    h=head('Pasos de Salud')+needs+oldSrv+'<p class="muted" style="margin-top:0">Tus pasos de la app Salud llenan solos tu hábito de caminar. Funciona con un hábito “con cantidad” cuya unidad sea <b>pasos</b>.</p>'+
+    (sh?'<div class="viewing" style="margin-bottom:12px"><span>Se llenará: '+esc(sh.emoji+' '+sh.name)+'</span></div>':'<button class="btn ghost block" style="margin-bottom:12px" data-act="habitTplName" data-v="Caminar">Crear hábito “Caminar”</button>')+
+    '<ol class="steps"><li>En <b>Atajos</b> → <b>Automatización</b> → <b>+</b> → <b>Hora del día</b>. Pon 21:00, diario, <b>Ejecutar inmediatamente</b> → <b>Nuevo atajo en blanco</b>. (Puedes hacer otra a las 15:00.)</li>'+
+    '<li>Agrega <b>Buscar muestras de salud</b> donde <b>Tipo</b> es <b>Pasos</b> y <b>Fecha de inicio</b> es <b>Hoy</b>.</li>'+
+    '<li>Agrega <b>Calcular estadísticas</b>: <b>Suma</b> de Muestras de salud.</li>'+
+    '<li>Agrega <b>Obtener contenido de URL</b> con esta dirección y al final pega la variable <b>Estadísticas</b>:</li></ol>'+copyBox(u)+
+    '<div class="hint" style="margin-top:8px">La primera vez el iPhone te pedirá permiso para leer tus pasos. Acéptalo.</div>';
+  }else if(kind==='coach'){
+    h=head('Coach con IA')+needs+oldSrv+'<p class="muted" style="margin-top:0">El coach ve tus hábitos, agenda, exámenes, promedios y peso para responderte, y habla en el tono que elegiste ('+TONES[S.settings.tone].label+'). Usa la API de Anthropic, que se cobra por uso: con un uso normal son centavos de dólar al mes, pero necesitas cargar saldo.</p>'+
+    '<ol class="steps"><li>Entra a <b>console.anthropic.com</b>, crea una cuenta y agrega saldo en <b>Billing</b>.</li>'+
+    '<li>En <b>API Keys</b> toca <b>Create Key</b> y cópiala.</li>'+
+    '<li>En Cloudflare → tu worker <b>sinexcusas</b> → <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b> → tipo <b>Secret</b>, nombre <code>ANTHROPIC_API_KEY</code>, valor = tu clave → <b>Deploy</b>.</li>'+
+    '<li>Vuelve aquí y toca <b>Revisar</b>.</li></ol>'+
+    '<div class="row" style="margin-top:12px"><button class="btn ghost" data-act="checkCoach">Revisar</button><button class="btn" data-act="coachOpen"'+(S.settings.coachAvail?'':' disabled')+'>Abrir coach</button></div>'+
+    '<div class="hint" style="margin-top:8px">Tu clave nunca llega a tu iPhone ni a GitHub: solo vive en tu servidor.</div>';
+  }
+  openSheet(h);
+}
+
+/* ---------- logros y niveles ---------- */
+const LEVELS=['Principiante','Aprendiz','Constante','Imparable','Élite','Bestia','Leyenda','Mito'];
+function statsAll(){
+  const t=today();let done=0,perfect=0,notesDone=S.notes.filter(n=>n.done).length;const per={};
+  Object.keys(S.log).forEach(k=>{if(k>t)return;const st=dayStats(fromKey(k));done+=st.done.length;if(st.hs.length&&st.pct===100)perfect++;st.done.forEach(h=>{per[h.id]=(per[h.id]||0)+1})});
+  const cur=Math.max(0,...S.habits.filter(h=>h.type!=='avoid').map(streak));
+  const best=Math.max(cur,S.settings.bestStreak||0);if(best>(S.settings.bestStreak||0))S.settings.bestStreak=best;
+  const sumWhere=f=>S.habits.filter(f).reduce((a,h)=>a+(per[h.id]||0),0);
+  const gs=liftGroups(),grades=S.grades.map(g=>g.score/(g.max||100)*100);
+  const subAvg=subjects().map(subjAvg).filter(x=>x!=null);
+  const xp=done*10+perfect*25+S.lifts.length*5+S.grades.length*5+S.weights.length*3+notesDone*3;
+  const lvl=Math.floor(Math.sqrt(xp/40))+1;
+  return{done,perfect,best,xp,lvl,water:sumWhere(h=>h.type==='qty'&&/^l$/i.test(h.unit||'')),gym:sumWhere(h=>/gym|gimnas|entren|pesas/i.test(h.name)),
+    lifts:S.lifts.length,pr:gs.some(g=>g.items.length>1&&g.best>g.items[0].kg),g90:grades.filter(p=>p>=90).length,
+    prom:S.grades.length>=3&&subAvg.length?subAvg.reduce((a,b)=>a+b,0)/subAvg.length:0,weights:S.weights.length,
+    avoid:Math.max(0,...S.habits.filter(h=>h.type==='avoid').map(streak)),previsor:S.events.some(e=>e.type==='examen'&&e.pre>0)};
+}
+const ACH=[
+  ['primer','🌱','Primer paso','Cumple tu primer hábito.',s=>s.done>=1],
+  ['cien','✅','Cien','Cumple 100 hábitos.',s=>s.done>=100],
+  ['racha7','🔥','Una semana','Racha de 7 días en un hábito.',s=>s.best>=7],
+  ['racha30','🔥','Un mes sin fallar','Racha de 30 días.',s=>s.best>=30],
+  ['racha100','💯','Cien días','Racha de 100 días.',s=>s.best>=100],
+  ['perfecto','⭐','Día perfecto','Cumple todos tus hábitos en un día.',s=>s.perfect>=1],
+  ['perfecto7','🌟','Siete perfectos','Siete días perfectos.',s=>s.perfect>=7],
+  ['agua30','💧','Riñones felices','30 días cumpliendo tu meta de agua.',s=>s.water>=30],
+  ['gym20','🏋️','Rata de gym','20 días de gym.',s=>s.gym>=20],
+  ['pr','🏆','Nuevo récord','Supera tu peso en un ejercicio.',s=>s.pr],
+  ['series50','💪','Cincuenta series','Registra 50 series.',s=>s.lifts>=50],
+  ['nota90','🎓','Excelencia','Saca 90 o más en una calificación.',s=>s.g90>=1],
+  ['prom90','📜','Cuadro de honor','Promedio de 90 o más (mínimo 3 calificaciones).',s=>s.prom>=90],
+  ['peso4','⚖️','Constancia','Cuatro registros de peso.',s=>s.weights>=4],
+  ['meta','🎯','Meta alcanzada','Llega a tu peso meta.',()=>!!S.settings.goalHit],
+  ['limpio30','🚭','Treinta días sin caer','30 días seguidos en un hábito para dejar.',s=>s.avoid>=30],
+  ['previsor','📅','Sin sorpresas','Registra un examen con aviso anticipado.',s=>s.previsor],
+  ['nivel5','🚀','Nivel 5','Llega al nivel 5.',s=>s.lvl>=5]
+];
+function checkAch(silent){
+  if(!S.ach)S.ach={};const s=statsAll(),nw=[];
+  ACH.forEach(a=>{if(!S.ach[a[0]]&&a[4](s)){S.ach[a[0]]=today();nw.push(a)}});
+  const up=s.lvl>(S.settings.level||1);S.settings.level=Math.max(s.lvl,S.settings.level||1);
+  if(!silent){
+    nw.forEach((a,i)=>setTimeout(()=>{toast('Logro desbloqueado',a[1]+' '+a[2]+'. '+a[3]);if(S.settings.voiceOn)speak('Logro desbloqueado: '+a[2])},i*600));
+    if(up)setTimeout(()=>toast('Subiste de nivel','Nivel '+s.lvl+': '+LEVELS[Math.min(LEVELS.length-1,s.lvl-1)]+'. '+toneSay('Así se hace, cabrón.','Bien.','¡Felicidades!')),nw.length*600);
+    if(nw.length||up)confetti(true);
+  }
+  if(nw.length||up)try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  return s;
+}
+function wrapMonth(){const n=new Date();return n.getDate()<=5?new Date(n.getFullYear(),n.getMonth()-1,1):new Date(n.getFullYear(),n.getMonth(),1)}
+function vLogros(){
+  const s=checkAch(true),cur=40*Math.pow(s.lvl-1,2),nxt=40*Math.pow(s.lvl,2),p=Math.round((s.xp-cur)/(nxt-cur)*100);
+  const got=ACH.filter(a=>S.ach&&S.ach[a[0]]).length,wm=wrapMonth();
+  return '<section class="card"><div style="display:flex;gap:16px;align-items:center"><div class="lvl num">'+s.lvl+'</div><div style="min-width:0;flex:1"><div class="eyebrow">Nivel</div><h2 style="font-size:24px">'+LEVELS[Math.min(LEVELS.length-1,s.lvl-1)]+'</h2>'+
+    '<div class="bar" style="height:10px;margin-top:8px"><i style="width:'+p+'%;background:var(--accent)"></i></div><div class="small muted num" style="margin-top:6px">'+s.xp+' XP · faltan '+(nxt-s.xp)+' para el nivel '+(s.lvl+1)+'</div></div></div>'+
+    '<div class="hint" style="margin-top:10px">Ganas XP con cada hábito cumplido (+10), día perfecto (+25), serie del gym, calificación, registro de peso y nota terminada.</div></section>'+
+    '<section class="card"><div class="card-h"><h2>Tu '+MONTHS[wm.getMonth()]+'</h2></div><div class="small muted" style="margin-bottom:12px">Tu resumen del mes, listo para compartir en historias.</div><button class="btn block" data-act="wrapOpen">Ver mi resumen</button></section>'+
+    '<section class="card"><div class="card-h"><h2>Logros</h2><span class="small muted num">'+got+' de '+ACH.length+'</span></div><div class="achs">'+
+    ACH.map(a=>{const on=S.ach&&S.ach[a[0]];return '<div class="ach'+(on?'':' off')+'"><span>'+a[1]+'</span><b>'+a[2]+'</b><small>'+(on?'Desbloqueado '+dayLabel(on):a[3])+'</small></div>'}).join('')+'</div></section>';
+}
+
+/* ---------- resumen mensual ---------- */
+function monthStats(m0){
+  const y=m0.getFullYear(),m=m0.getMonth(),end=new Date(y,m+1,0),last=end<new Date()?end:new Date();
+  let sum=0,cnt=0,perfect=0,done=0,water=0,gym=0,run=0,bestRun=0;const per={},dowA={};
+  for(let d=new Date(y,m,1);d<=last;d=addDays(d,1)){
+    const k=dkey(d),st=dayStats(d);if(!st.hs.length){run=0;continue}
+    cnt++;sum+=st.pct;done+=st.done.length;if(st.pct===100){perfect++;run++;bestRun=Math.max(bestRun,run)}else run=0;
+    const w=d.getDay();dowA[w]=dowA[w]||[0,0];dowA[w][0]+=st.pct;dowA[w][1]++;
+    st.hs.forEach(h=>{per[h.id]=per[h.id]||[0,0];per[h.id][1]++;if(isDone(h,val(h,k)))per[h.id][0]++;
+      if(h.type==='qty'&&/^l$/i.test(h.unit||''))water+=val(h,k);if(/gym|gimnas|entren|pesas/i.test(h.name)&&isDone(h,val(h,k)))gym++});
+  }
+  const rates=S.habits.filter(h=>per[h.id]&&per[h.id][1]>=3).map(h=>({h,r:per[h.id][0]/per[h.id][1]})).sort((a,b)=>b.r-a.r);
+  const pre=dkey(new Date(y,m,1)).slice(0,7);
+  const lifts=S.lifts.filter(l=>l.date.startsWith(pre)),vol=lifts.reduce((a,l)=>a+l.kg*l.reps,0);
+  const ws=sortedW().filter(w=>w.date.startsWith(pre));
+  const bestDow=Object.entries(dowA).map(([d,[s2,c]])=>[Number(d),s2/c]).sort((a,b)=>b[1]-a[1])[0];
+  return{name:MONTHS[m],avg:cnt?Math.round(sum/cnt):0,perfect,done,bestRun,water:Math.round(water*10)/10,gym,lifts:lifts.length,vol:Math.round(vol),
+    best:rates[0],worst:rates.length>1?rates[rates.length-1]:null,wDelta:ws.length>1?Math.round((ws[ws.length-1].kg-ws[0].kg)*10)/10:null,bestDow:bestDow?DAYS_FULL[bestDow[0]]:null,
+    exams:S.events.filter(e=>e.type==='examen'&&e.date.startsWith(pre)).length};
+}
+let WR={i:0,slides:[],ms:null};
+function wrapOpen(){
+  const ms=monthStats(wrapMonth());WR.ms=ms;const sl=[];
+  sl.push('<div class="eyebrow">Sin Excusas</div><h1 class="wr-h">Tu '+ms.name+'</h1><div class="wr-big num">'+ms.avg+'%</div><p class="wr-p">de tus hábitos cumplidos en promedio.</p>');
+  sl.push('<div class="wr-big num">'+ms.done+'</div><p class="wr-p">hábitos cumplidos este mes.</p><div class="wr-row"><b class="num">'+ms.perfect+'</b><span>días perfectos</span></div><div class="wr-row"><b class="num">'+ms.bestRun+'</b><span>días perfectos seguidos, tu mejor racha</span></div>');
+  if(ms.best)sl.push('<div class="eyebrow">Tu mejor hábito</div><h1 class="wr-h">'+esc(ms.best.h.emoji+' '+ms.best.h.name)+'</h1><p class="wr-p">'+Math.round(ms.best.r*100)+'% de los días.</p>'+
+    (ms.worst&&ms.worst.r<ms.best.r?'<div class="sep" style="background:rgba(255,255,255,.25)"></div><div class="eyebrow">El que más fallaste</div><h2 class="wr-h2">'+esc(ms.worst.h.emoji+' '+ms.worst.h.name)+'</h2><p class="wr-p">'+Math.round(ms.worst.r*100)+'%. '+esc(toneSay('El próximo mes no hay excusa, huevón.','El próximo mes se corrige.','El próximo mes le ganas.'))+'</p>':''));
+  const ex=[];if(ms.water)ex.push(['💧',fmt(ms.water)+' L','de agua']);if(ms.gym)ex.push(['🏋️',ms.gym,ms.gym===1?'día de gym':'días de gym']);
+  if(ms.vol)ex.push(['💪',ms.vol.toLocaleString('es-MX')+' kg','levantados en '+ms.lifts+' series']);if(ms.wDelta!=null)ex.push(['⚖️',(ms.wDelta>0?'+':'')+fmt(ms.wDelta)+' kg','de cambio en tu peso']);
+  if(ms.exams)ex.push(['📚',ms.exams,ms.exams===1?'examen':'exámenes']);
+  if(ex.length)sl.push('<div class="eyebrow">En números</div>'+ex.map(x=>'<div class="wr-row"><span style="font-size:30px">'+x[0]+'</span><b class="num">'+x[1]+'</b><span>'+x[2]+'</span></div>').join(''));
+  if(ms.bestDow)sl.push('<div class="eyebrow">Tu mejor día</div><h1 class="wr-h">'+ms.bestDow+'</h1><p class="wr-p">Es el día en que más cumples. Úsalo para lo más difícil.</p>');
+  sl.push('<div class="eyebrow">Veredicto</div><h1 class="wr-h">'+esc(ms.avg>=85?toneSay('Mes de bestia, cabrón.','Gran mes.','¡Mes increíble!'):ms.avg>=60?toneSay('Nada mal, pero se puede más, huevón.','Buen mes. Se puede más.','¡Buen mes! Vamos por más.'):toneSay('Mes flojo, huevón. El que viene sin excusas.','Mes flojo. A corregir.','Mes difícil. El siguiente es tuyo.'))+'</h1>'+
+    '<div class="stack" style="margin-top:24px"><button class="btn block" data-act="wrapShare">Compartir en historias</button><button class="btn ghost block" data-act="wrapClose">Cerrar</button></div>');
+  WR.slides=sl;WR.i=0;wrapShow();
+}
+function wrapShow(){
+  const el=document.getElementById('wrap');el.hidden=false;
+  el.innerHTML='<div class="wr-bars">'+WR.slides.map((_,i)=>'<i class="'+(i<=WR.i?'on':'')+'"></i>').join('')+'</div><button class="wr-x" data-act="wrapClose" aria-label="Cerrar">×</button><div class="wr-in" data-act="wrapNext">'+WR.slides[WR.i]+'</div>'+
+    (WR.i<WR.slides.length-1?'<div class="wr-tap">Toca para continuar</div>':'');
+}
+async function wrapShare(){
+  const ms=WR.ms,W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const acc=S.settings.accent||'#f5d547',ink=lum(acc)>.42?'#15130c':'#ffffff';
+  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,acc);g.addColorStop(1,'#13111d');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const disp=getComputedStyle(document.documentElement).getPropertyValue('--f-display')||'sans-serif';
+  x.fillStyle=ink;x.font='700 44px '+disp;x.fillText('SIN EXCUSAS',90,170);
+  x.font='800 110px '+disp;x.fillText(ms.name.charAt(0).toUpperCase()+ms.name.slice(1),90,320);
+  x.font='800 300px '+disp;x.fillText(ms.avg+'%',80,640);
+  x.fillStyle='#ffffff';x.font='500 46px '+disp;x.fillText('de hábitos cumplidos',90,720);
+  const rows=[[ms.done,'hábitos cumplidos'],[ms.perfect,'días perfectos']];
+  if(ms.best)rows.push([Math.round(ms.best.r*100)+'%',ms.best.h.name]);if(ms.water)rows.push([fmt(ms.water)+' L','de agua']);if(ms.gym)rows.push([ms.gym,'días de gym']);if(ms.vol)rows.push([ms.vol.toLocaleString('es-MX')+' kg','levantados']);
+  let yy=900;rows.slice(0,6).forEach(r=>{x.font='800 96px '+disp;x.fillText(String(r[0]),90,yy);x.font='500 44px '+disp;x.fillText(String(r[1]).slice(0,28),90,yy+60);yy+=185});
+  x.font='600 38px '+disp;x.globalAlpha=.8;x.fillText('Hecho con Sin Excusas',90,H-110);x.globalAlpha=1;
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  const file=new File([blob],'sin-excusas-'+ms.name+'.png',{type:'image/png'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Mi '+ms.name+' en Sin Excusas'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const url=URL.createObjectURL(blob);WR.slides[WR.slides.length-1]='<div class="eyebrow">Tu imagen</div><img src="'+url+'" alt="Resumen de '+ms.name+'" style="width:100%;border-radius:16px;margin-top:10px"><p class="wr-p" style="font-size:16px">Mantén presionada la imagen para guardarla.</p><button class="btn ghost block" data-act="wrapClose">Cerrar</button>';wrapShow();
+}
+
 /* ---------- render ---------- */
 function render(){
   const now=new Date();
@@ -1516,8 +1989,8 @@ document.addEventListener('click',e=>{
     case 'pauseH':{const h=H();h.paused=!h.paused;save();render();toast(h.paused?'En pausa':'Reanudado',h.name+(h.paused?' ya no te avisará.':' vuelve a contar.'));break}
     case 'moveH':{const act=S.habits;const i=act.findIndex(x=>x.id===id),j=i+Number(v);if(j<0||j>=act.length)break;[act[i],act[j]]=[act[j],act[i]];save();render();break}
     case 'emoji':{const f=formOf(el);f.emoji.value=v;document.getElementById('emojiPrev').textContent=v;el.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b===el));break}
-    case 'htype':segPick(el,'type');document.getElementById('qtyF').hidden=v!=='qty';{const r=document.getElementById('remF');if(r)r.hidden=v==='avoid';const ah=document.getElementById('avoidHint');if(ah)ah.hidden=v!=='avoid'}
-      {const f=formOf(el);const m=toneMsgs(S.settings.tone,v);const all=[].concat(...Object.values(TONES).map(t=>[t.qty.join('\n'),t.check.join('\n')]));if(all.includes(f.hate.value.trim()))f.hate.value=m.hate}break;
+    case 'htype':segPick(el,'type');document.getElementById('qtyF').hidden=v!=='qty';{const ah=document.getElementById('avoidHint');if(ah)ah.hidden=v!=='avoid'}
+      {const f=formOf(el);const m=habitMsgs(f.elements.name.value,v,S.settings.tone);if(isGenericMsg(f.hate.value)||HMSG.some(x=>x.re.test(f.elements.name.value)))f.hate.value=m.hate}break;
     case 'daysAll':case 'daysWeek':case 'daysEnd':{const set=a==='daysAll'?[0,1,2,3,4,5,6]:a==='daysWeek'?[1,2,3,4,5]:[0,6];formOf(el).querySelectorAll('input[name=days]').forEach(c=>c.checked=set.includes(Number(c.value)));break}
     case 'remAdd':{document.getElementById('rems').insertAdjacentHTML('beforeend',remRow(''));const l=document.querySelector('#rems .remrow:last-child input');l&&l.focus();break}
     case 'remDel':el.parentElement.remove();break;
@@ -1525,7 +1998,7 @@ document.addEventListener('click',e=>{
       if(t<f){toast('Revisa las horas','“Hasta” debe ser después de “Desde”.');break}
       let h='';for(let m=f;m<=t;m+=s)h+=remRow(fromMin(m));document.getElementById('rems').innerHTML=h;break}
     case 'insVar':{const t=document.getElementById(el.dataset.for);const p=t.selectionStart??t.value.length;t.value=t.value.slice(0,p)+v+t.value.slice(t.selectionEnd??p);t.focus();t.setSelectionRange(p+v.length,p+v.length);break}
-    case 'fillTone':{const f=formOf(el);const m=toneMsgs(v,f.type.value);f.hate.value=m.hate;f.congrats.value=m.congrats;break}
+    case 'fillTone':{const f=formOf(el);const m=habitMsgs(f.elements.name.value,f.type.value,v);f.hate.value=m.hate;f.congrats.value=m.congrats;break}
     case 'newNote':noteForm();break;
     case 'editNote':noteForm(S.notes.find(x=>x.id===id));break;
     case 'noteDone':{const n=S.notes.find(x=>x.id===id);n.done=true;save();render();toast('Entregado','“'+n.title+'” marcada como hecha.');confetti(false);break}
@@ -1558,7 +2031,7 @@ document.addEventListener('click',e=>{
     case 'focusStop':S.focus=null;save();renderFocus();toast('Sesión cancelada',S.settings.tone==='brutal'?gfix('Te rendiste. Qué decepción, huevón.'):'La próxima la terminas.');break;
     case 'clearExample':S.notes=[];S.events=[];S.log={};S.grades=[];S.example=false;S.alarms=[];save();render();toast('Listo','Ejemplos borrados. Tus hábitos y rutina siguen para que los ajustes o elimines.');break;
     case 'set':S.settings[el.dataset.k]=v;save();applyTheme();render();break;
-    case 'applyToneAll':S.habits.forEach(h=>{const m=toneMsgs(S.settings.tone,h.type);h.hate=m.hate;h.congrats=m.congrats});S.settings.nightHate=gfix(TONES[S.settings.tone].nh);S.settings.nightOk=gfix(TONES[S.settings.tone].no);save();render();toast('Listo','Todos tus mensajes usan el tono '+TONES[S.settings.tone].label+'.');break;
+    case 'applyToneAll':S.habits.forEach(h=>{const m=habitMsgs(h.name,h.type,S.settings.tone);h.hate=m.hate;h.congrats=m.congrats});S.settings.nightHate=gfix(TONES[S.settings.tone].nh);S.settings.nightOk=gfix(TONES[S.settings.tone].no);save();render();toast('Listo','Todos tus mensajes usan el tono '+TONES[S.settings.tone].label+'.');break;
     case 'toggleNight':S.settings.nightOn=!S.settings.nightOn;save();render();break;
     case 'enableNotif':
       if(!notifSupported()){toast('Notificaciones','Este navegador no las permite. En iPhone abre la app desde su ícono de inicio.');break}
@@ -1610,6 +2083,24 @@ document.addEventListener('click',e=>{
     case 'newExam':examForm();break;
     case 'bgoal':segPick(el,'goal');document.getElementById('bTF').hidden=!(v==='bajar'||v==='subir');break;
     case 'pickEx':{const i=document.getElementById('lE');i.value=v;const k=document.getElementById('lK');const same=S.lifts.filter(l=>l.ex.trim().toLowerCase()===v.toLowerCase());if(same.length&&!k.value)k.value=same[same.length-1].kg;k.focus();break}
+    case 'connOpen':connSheet(v);break;
+    case 'copyText':copyText(v);break;
+    case 'toggleCloud':S.settings.cloudOn=!S.settings.cloudOn;save();connSheet('cloud');break;
+    case 'cloudNow':cloudDirty=true;cloudBackup(2);setTimeout(()=>{if(!document.getElementById('sheet').hidden)connSheet('cloud')},1500);break;
+    case 'toggleFriend':S.settings.friendOn=!S.settings.friendOn;if(!S.settings.friendOn)S.settings.friendToken=genKey(20);S.settings.pubHash='';save();syncPublic();connSheet('friend');break;
+    case 'shareFriend':{const t='Échale un ojo a mis hábitos y si fallo, dime algo: '+v;try{if(navigator.share){navigator.share({title:'Mis hábitos',text:t,url:v}).catch(()=>{});break}}catch(e){}copyText(v);break}
+    case 'checkCoach':checkServer().then(()=>{connSheet('coach');toast(S.settings.coachAvail?'Coach listo':'Todavía no',S.settings.coachAvail?'Ya puedes hablar con tu coach.':'Tu servidor aún no tiene la clave. Revisa el nombre ANTHROPIC_API_KEY y que hayas hecho Deploy.')});break;
+    case 'coachOpen':coachSheet();break;
+    case 'coachAsk':coachSend(v);break;
+    case 'coachClear':S.chat=[];save();coachSheet();break;
+    case 'toggleBrief':S.settings.briefOn=!S.settings.briefOn;save();render();break;
+    case 'toggleVoice':S.settings.voiceOn=!S.settings.voiceOn;save();render();if(S.settings.voiceOn)speak(gfix(toneSay('Listo, ahora también te voy a gritar, cabrón.','Voz activada.','¡Listo! Ahora también te hablo.')));break;
+    case 'speakVerdict':{const t=currentVerdict()||'Hoy no tienes hábitos pendientes.';if(!speak(t))toast('Sin voz','Tu iPhone no permitió reproducir la voz.');break}
+    case 'wrapOpen':wrapOpen();break;
+    case 'wrapNext':if(WR.i<WR.slides.length-1){WR.i++;wrapShow()}break;
+    case 'wrapClose':document.getElementById('wrap').hidden=true;break;
+    case 'wrapShare':wrapShare();break;
+    case 'habitTplName':{const t=TEMPLATES.find(x=>x.name===v);if(t)habitForm(habitFrom(t,S.settings.tone),true);break}
     case 'wzRole':wzCollect();WZ.d.role=v;wzRender();break;
     case 'editRole':welcome('update',1);break;
     case 'habitRec':{const t=recTemplates()[Number(v)];if(!t)break;const hb=habitFrom(t,S.settings.tone);if(t.brutal&&S.settings.tone==='brutal')hb.hate=gfix(t.brutal)+'\n'+hb.hate;delete hb.brutal;habitForm(hb,true);break}
@@ -1648,8 +2139,9 @@ document.addEventListener('submit',e=>{
     case 'habit':{
       const h={id:id,emoji:g('emoji')||'🎯',name:g('name')||'Hábito',type:g('type'),target:Math.max(0.01,Number(g('target'))||1),unit:g('unit'),step:Math.max(0.01,Number(g('step'))||1),
         days:fd.getAll('days').map(Number),reminders:[...new Set(fd.getAll('rem').filter(Boolean))].sort(),color:g('color')||PALETTE[0],hate:g('hate'),congrats:g('congrats'),paused:false};
-      if(h.type!=='qty'){h.target=1;h.step=1;h.unit=''}if(h.type==='avoid')h.reminders=[];h.essential=fd.get('essential')==='on';
+      if(h.type!=='qty'){h.target=1;h.step=1;h.unit=''}h.essential=fd.get('essential')==='on';
       if(!h.days.length)h.days=[0,1,2,3,4,5,6];
+      {const m=habitMsgs(h.name,h.type,S.settings.tone);if(isGenericMsg(h.hate))h.hate=m.hate;if(isGenericMsg(h.congrats))h.congrats=m.congrats}
       const i=S.habits.findIndex(x=>x.id===id);if(i>=0){h.paused=S.habits[i].paused;h.created=S.habits[i].created||'';S.habits[i]=h}else{h.created=today();S.habits.push(h)}
       const k=today(),t=hm(new Date());Object.keys(S.sent).forEach(x=>{if(x.startsWith(k+'|'+h.id+'|')&&!x.endsWith('|done'))delete S.sent[x]});
       h.reminders.forEach(r=>{if(r<=t)S.sent[k+'|'+h.id+'|'+r]=1});
@@ -1673,6 +2165,9 @@ document.addEventListener('submit',e=>{
     case 'night':S.settings.night=g('night');S.settings.nightHate=g('nightHate');S.settings.nightOk=g('nightOk');
       if(S.settings.night<=hm(new Date()))S.sent[today()+'|night']=1;else delete S.sent[today()+'|night'];toast('Guardado','Revisión a las '+S.settings.night+'.');break;
     case 'push':S.settings.pushUrl=g('url');S.settings.pushToken=g('token');save();connectPush();return;
+    case 'restore':restoreCloud(g('url'),g('key'));return;
+    case 'coach':coachSend(g('q'));return;
+    case 'brief':S.settings.briefTime=g('time')||'07:00';toast('Guardado','Briefing a las '+S.settings.briefTime+'.');break;
     case 'weight':{const kg=Number(g('kg'));if(!(kg>0)){toast('Falta el peso','Escribe tu peso en kilos.');return}upsertWeight(g('date')||today(),kg);break}
     case 'body':{S.body.age=g('age');S.body.height=g('height');S.body.goal=g('goal');S.body.target=(g('goal')==='bajar'||g('goal')==='subir')?g('target'):'';toast('Guardado','Tus datos se actualizaron.');break}
     case 'weigh':S.body.weighDay=Number(g('day'));S.body.weighTime=g('time')||'08:00';toast('Guardado','Pesaje los '+DAYS_FULL[S.body.weighDay].toLowerCase()+' a las '+S.body.weighTime+'.');break;
@@ -1708,9 +2203,9 @@ document.addEventListener('submit',e=>{
       if(mode==='blank')setTimeout(templateSheet,350);
       return}
   }
-  save();closeSheet();render();
+  save();closeSheet();render();checkAch(false);
 });
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(swReg)swReg.update().catch(()=>{});queueSync();if(UI.date>today())UI.date=today();if(document.getElementById('sheet').hidden)render();tick();if(S.focus)renderFocus()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cloudBackup(true);return}spokeThisOpen=false;fetchSteps();fetchScreen();if(!document.hidden){if(swReg)swReg.update().catch(()=>{});queueSync();if(UI.date>today())UI.date=today();if(document.getElementById('sheet').hidden)render();tick();if(S.focus)renderFocus()}});
 
 /* ---------- arranque ---------- */
 document.getElementById('gear').innerHTML=ICON.gear;
